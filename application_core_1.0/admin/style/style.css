@@ -1,0 +1,125 @@
+
+div.modal > p{
+    margin:0;
+    padding:34px 20px;
+    text-align:center;
+}
+.unpublished{ opacity: 0.4}
+.admin-module{
+	border:1px solid rgba(0,0,0,0);
+	box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+}
+.admin-module:hover{
+    /*background:#F2F2F2;*/
+    /*padding:20px;*/
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    border:1px dotted rgba(255,125,125,0.50);;
+}
+
+.admin-module .btn-toolbar{
+	display: none;
+	position: relative;
+        margin: 0;
+}
+.admin-module:hover .btn-toolbar{
+	display: inherit;
+}
+.admin-module:hover > .admin-module .btn-toolbar{
+	display: none;
+}
+.admin-module:hover > .admin-module:hover .btn-toolbar{
+	display: inherit;
+}
+.admin-module .btn-toolbar.admin-module-tools{ display:none;}
+.admin-block .btn-toolbar.admin-module-tools{display: block;}
+
+.admin-module .btn-toolbar .btn-group{
+	position: absolute;
+	right:0;
+	top:0;
+	background-color: rgba(255,125,125,0.50);
+	padding: 5px;
+	border:1px solid #fff;
+	border-radius: 4px;
+	-moz-border-radius:4px;
+	-webkit-border-radius: 4px;
+	opacity: 0.8;
+        z-index: 1000;
+}
+
+header.header{
+    min-height: 100px;
+    background:#DDDDDD;
+}
+
+aside.aside{
+    padding:20px 20px;
+    min-height: 100px;
+    background:#DDDDDD;
+    
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+}
+
+aside nav.nav{
+    padding:20px 20px;
+    min-height: 100px;
+    background:#CCCCCC;
+    
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+}
+
+
+#admin-panel{
+	background:#1b1b1b;
+	border-bottom:1px solid #EE5F5B;
+	padding:14px 20px;
+	/*text-align:right;*/
+        width: 100%;
+	color:#FFFFFF;
+        display:none;
+        box-sizing:border-box;
+        -moz-box-sizing:border-box;
+        -webkit-box-sizing:border-box;
+        position: relative;
+        z-index:10;
+}
+#admin-panel p{
+    display:inline;
+}
+#admin-panel .btn-toolbar-admin{
+    display:inline;
+    margin-left: 20px;
+}
+#admin-sub-panel{
+	text-align:center;
+   
+	width:150px;
+	float:right;
+	color:#FFFFFF;
+	text-decoration:none;
+	margin-right:30px;
+	background:#1b1b1b;
+        
+        
+        border-radius: 0 0 4px 4px;
+        -moz-border-radius: 0 0 4px 4px;
+        -webkit-border-radius: 0 0 4px 4px;
+}
+#admin-sub-panel span {
+    cursor: pointer;
+    display: block;
+    margin-top: -5px;
+}
+
+/* стиль формы редактирования и перетаскивания */
+.contanier_drag_drop{ position: relative;}
+aside.toolbar_forms{position: absolute; background: #CCC; width:20%; top:0; left:0; padding: 10px;}
+div.dd{ margin-left: 25%; border:1px dotted #ccc; min-height: 300px; }

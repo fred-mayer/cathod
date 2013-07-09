@@ -1,0 +1,58 @@
+Options -Indexes
+Options +FollowSymLinks
+
+RewriteEngine on
+
+#
+# media
+#
+RewriteRule ^media/(.*)$ media/$1 [L]
+
+
+#
+# templates
+#
+RewriteRule ^templates/(.*)$ templates/$1 [L]
+
+
+
+#
+# admin
+#
+RewriteRule ^ajax/admin/(.*)$ index.php?admin=$1 [L,QSA]
+RewriteRule ^ajax/admin(.*)$ index.php?admin=admin$1 [L,QSA]
+
+
+
+#
+# ajax
+#
+RewriteRule ^ajax/(.*)$ index.php?ajax=$1 [L,QSA]
+
+
+
+#
+# style
+#
+RewriteRule ^([^/\.]+)/(.*)\.css$ index.php?template=$1&style=$2 [L]
+RewriteRule ^([^/\.]+)/(.*)\.css index.php?template=$1&style=$2 [L]
+
+#
+# js
+#
+RewriteRule ^([^/\.]+)/(.*)\.js$ index.php?template=$1&js=$2 [L]
+RewriteRule ^([^/\.]+)/(.*)\.js index.php?template=$1&js=$2 [L]
+
+
+#
+# img
+#
+RewriteRule ^([^/\.]+)/([^/]+)\.(gif|jpg|jpeg|png|ico)$ index.php?template=$1&img=$2&type=$3 [L]
+RewriteRule ^([^/\.]+)/(.*)\.(gif|jpg|jpeg|png|ico)$ index.php?template=$1&img=$2&type=$3 [L]
+
+
+
+RewriteBase /
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ index.php?params=$1 [QSA]
+

@@ -1,0 +1,95 @@
+/* 
+    Document   : style
+    Created on : 15.03.2013, 15:46:26
+    Author     : mizko
+    Description:
+        Purpose of the stylesheet follows.
+*/
+html{ height:100%; padding: 0; margin: 0; }
+body{height:100%; padding: 0; margin: 0; min-height: 100%;}
+body > section { 
+    display: block;
+    background: #C9C9C9;
+}
+body{
+	background: #F5F5F5;
+	font-size: 11px;
+}
+h2{ font-size: 24px; line-height: 25px;}
+h3{ line-height: 21px; font-size: 20px;}
+
+
+ul.nav{font-size: 13px;}
+
+/* module catalog */
+ul.breadcrumbs li{float:left; margin-right: 5px; vertical-align: middle;}
+ul.breadcrumbs li h3{ margin: 0; font-weight: normal;}
+.row.products{ margin-right: -5px;}
+.products .product .logoMag{position: absolute; top:6px; left:6px; opacity: 0.4;}
+.products .product .logoMag:hover{opacity: 1;}
+.products .product{ margin-bottom: 30px; position: relative;}
+.products .product .imgblock{overflow: hidden; height: 241px; vertical-align: middle; line-height: 241px;}
+.products .product a{color:#000;}
+.products .product a:hover{ text-decoration: none;}
+.products .product .title{ color: #999; min-height: 22px; line-height: 11px; margin-bottom: 5px; margin-top: 5px;}
+.products .product .params{ position: relative; height: 20px;}
+.products .product .sale{ position:absolute; left:0; width: 50%; color: #FF1111; font-size: 20px; font-weight:bold;}
+.products .product .price{position:absolute; right:0; width: 50%; font-size: 20px; line-height: 20px; vertical-align: top;    text-align: right;
+}
+.products .product small{line-height: 10px;}
+.products .product .price .currency{ font-size: 70%; vertical-align: top;}
+.products .product .oldprice{display:block; font-size: 10px; line-height: 10px; text-decoration: line-through;}
+.currency{ text-transform: uppercase; /*text-decoration: line-through;*/}
+.currency:before{ content: "_"; position: absolute; top:-0.6ex;}
+.oldprice .currency:before{content: "";}
+/* // module catalog */
+
+/*module catalog_tree */
+.catalog_tree .nav-list{ padding-left: 0; padding-right: 0;}
+.catalog_tree .nav-list .nav-list{ padding-left: 15px;  }
+.catalog_tree .nav-list .nav-list > li{ position: relative;}
+.catalog_tree li.nav-header{position: relative;}
+.catalog_tree .nav-list .nav-list > li > a{ padding: 0 10px; }
+i.action{ display: inline-block; position: absolute; right:0; top:0; padding: 3px; cursor:pointer; margin-left: 5px; display:none;}
+.catalog_tree .nav-list .nav-list li:hover i.action{ display: block;}
+.catalog_tree li.nav-header:hover i.action{ display: block;}
+/* //module catalog_tree */
+
+.block_offers table, .block_offer_detail table{ width: auto; vertical-align: top; padding: 5px; margin: 10px 0; border-bottom:1px dashed #CCC; }
+.block_offers table th, .block_offer_detail th{ padding: 3px; text-align: left;}
+.block_offers table td, .block_offer_detail td{ padding: 3px; text-align: left; height: 40px;}
+
+.block_offer_detail td, .block_offer_detail th{ height: auto; font-size: 12px; padding: 8px}
+.block_offers .row-fluid .span6:nth-of-type(odd){margin-left: 0;}
+
+.descr{ color:#999; font-style: italic;}
+
+.offer{ margin-bottom: 10px; text-shadow: 0 1px 1px #FFF;}
+
+/*.range-rate{position: absolute; top: -15px;}
+.rate-r input, .rate-r span{margin-top:-10px;}*/
+.filter-form{padding-top: 15px; }
+.filter-form .input-append{ vertical-align: top;}
+.range{ margin-top: 5px;}
+
+
+/*.offer{ border: 1px solid #CCC; border-radius: 4px; padding: 5px; margin: 10px; text-shadow: 0 1px 0 #FFF;}*/
+
+footer{
+    margin-top: 30px;
+    margin-bottom: 5px;
+}
+
+
+span.loading{
+    display:block;
+    height:150px;
+    background:url(../img/loading.gif) no-repeat center center;
+}
+
+
+aside div.news > article > h1{
+    font-size:12px;
+    line-height:14px;
+    text-align: justify;
+}
