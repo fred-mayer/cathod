@@ -1,5 +1,5 @@
 
-
+/*
 $(".banner[idbanner]").each(function(){
     $(this).prepend('<div class="btn-toolbar"><div class="btn-group">'+
                         '<a class="btn btn-mini" module="banner" action="edit" id="'+$(this).attr('idbanner')+'" href="#"><i class="icon-pencil"></i></a>'+
@@ -7,3 +7,4 @@ $(".banner[idbanner]").each(function(){
                         '<a class="btn btn-mini" module="admin" action="delmodule" idpage="'+$(this).attr('idpage')+'" idmodule="'+$(this).attr('idmodule')+'" set_pos="'+$(this).attr('set_pos')+'" href="#"><i class="icon-remove"></i></a>'+
                     '</div></div>');
 });
+*/

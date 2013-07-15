@@ -14,8 +14,8 @@ class Tforms extends TModule
         if(count($formFields)){
             $data['form'] = $form;
             $data['form_fields'] = $formFields;
-            $data['class_form'] = new TForm('','http://dev1.cathod.ru/ajax/forms?action=sendform');
-            $template->setScript('jquery.validate.min.js'); //подключаем скрипт валидации
+            $data['class_form'] = new TForm('','/ajax/forms?action=sendform');
+            //$template->setScript('jquery.validate.min.js'); //подключаем скрипт валидации
         }else{
             if($this->template->auth->isAuthorized){
                 $data['errors'] = "Форма пуста! Добавьте в форму элементы!";
@@ -34,18 +34,28 @@ class Tforms extends TModule
             //считываем поля формы!
             $res = $db->select("SELECT * FROM forms_fields WHERE id_form=".$post->id_form. " ORDER BY `order` ASC")->toObject();
             if(count($res)){
+                include_once (CLASS_DIR.'mail.php');
+                $mail = new TMail();
                 $message = "";
                 foreach($res as $field){
-                    if($post[$field->name]){
-                      $message .= "<p><strong>".$field->label.":</strong> ".$post[$field->name]."</p>"; 
-                    }elseif($field->is_required){
-                        $error = 1; //заметили ошибку
+                    if($field->type !='file'){
+                        if($post[$field->name]){
+                          $message .= "<p><strong>".$field->label.":</strong> ".$post[$field->name]."</p>"; 
+                        }elseif($field->is_required){
+                            $error = 1; //заметили ошибку
+                        }
+                    }else{//если файл отправляем
+                    	if($_FILES[$field->name]['tmp_name']){
+                        	//проверка типа файла
+                        	$type = $_FILES[$field->name]['type'];
+                        
+                        	$mail->addAttach($field->name);
+                        }
                     }
                 }
                 //подготавливаем к отправке
                 $form = $db->select("SELECT * FROM forms WHERE id=".$post->id_form)->current();
-                include_once (CLASS_DIR.'mail.php');
-                $mail = new TMail();
+                
                 $mail->addRecipient($form->mailto);
                 $mail->setSubject($form->subject);
                 $mailfrom = $form->mailfrom;
@@ -65,6 +75,13 @@ class Tforms extends TModule
             }
             
         }
+    }
+    public function getAdminToolbar( $attr )
+    {
+        $buttons[] = array('action'=>'settings', 'icon'=>'wrench', 'text'=>'Настройки', 'title'=>'');
+        $buttons[] = array('action'=>'edit', 'icon'=>'pencil', 'text'=>'Редактировать', 'title'=>'');
+        
+        return parent::getAdminToolbar( $attr, $buttons );
     }
 }
 

@@ -1,5 +1,5 @@
 
-
+/*
 $(".catalog[idmodule]").each(function(){
     $(this).prepend('<div class="btn-toolbar"><div class="btn-group">'+
 			'<a class="btn btn-mini" module="catalog" model="catalog" action="addMagazine" id="'+$(this).attr('idmodule')+'" href="#" title="Добавить магазин для парсинга товаров"><i class="icon-shopping-cart"></i></a>'+
@@ -7,7 +7,7 @@ $(".catalog[idmodule]").each(function(){
 			'<a class="btn btn-mini" module="catalog" model="catalog" action="parse" id="'+$(this).attr('idmodule')+'" href="#" title="Обновить товары с магазинов"><i class="icon-refresh"></i></a>'+
                         '<a class="btn btn-mini" module="catalog" model="catalog" action="del" id="'+$(this).attr('idmodule')+'" href="#" title="Удалить модуль со страницы"><i class="icon-remove"></i></a>'+
                     '</div></div>');
-});
+});*/
 
 $(".catalog[idmodule] .product").each(function(){
     $(this).prepend('<div class="btn-toolbar"><div class="btn-group">'+

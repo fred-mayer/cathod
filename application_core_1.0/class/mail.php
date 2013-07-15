@@ -11,9 +11,11 @@ class TMail
     protected $content = "";
     protected $errors = false;
     protected $encoding = "utf-8";
+    protected $unic = "";
+    protected $attach = array();
             
     function __construct(){
-        
+        $this->unic = '----'.substr(md5(uniqid(rand(),true)),0,16);
     }
     
     public function send(){
@@ -37,8 +39,8 @@ class TMail
         //контент
         if(!$this->content){ $error[]="Нет содержания письма";}
         
-        //заголовки
-        $headers = ($this->isHTML)? "Content-type: text/html; charset=".$this->encoding." \r\n":"";
+        $headers ="";
+        
         //от кого
         $headers .= ($this->sender && $this->ValidateAddress($this->sender))? "From: <".$this->sender.">\r\n":"";
         //копия
@@ -59,13 +61,39 @@ class TMail
             $headers = substr($headers, 0, -1);
             $headers .= "\r\n";
         }
+        //заголовки
+        $headers .= "MIME-Version: 1.0\r\n";
+        $headers .= "Content-Type: multipart/mixed; boundary=\"".$this->unic."\""; //задаем уникальный разделитель
+        $body = "";
+        $body .= "--".$this->unic."\r\n";
+        $body .= ($this->isHTML)? "Content-Type: text/html; charset=".$this->encoding."\r\n":"Content-Type:text/plain; charset=".$this->encoding."\r\n";
+        $body .= "Content-Transfer-Encoding: base64\r\n\r\n";
+        $this->content = $body .chunk_split(base64_encode($this->content))."\r\n";
+        
+        //Вложения
+        if(count($this->attach)){
+            foreach ($this->attach as $attach){
+                $addContent = "--".$this->unic."\r\n";
+                $addContent .= "Content-Type: ".$attach['type']."; name=\"".$attach['name']."\"\r\n";
+                $addContent .= "Content-Transfer-Encoding:base64\r\n";
+                $addContent .= "Content-Disposition:attachment; filename=\"".$attach['name']."\"\r\n\r\n";
+                $addContent .= $attach['file']."\r\n";
+            }
+            $this->content .= $addContent;
+        }
+        $this->content .= "--".$this->unic."--";
+        
         //все готово проверяем были ли ошибки если нет то отправляем
         if(isset($errors)){
             return $errors;
         }else{
+            //echo $headers."<br>\r\n".$this->content;
             return mail($toS, $this->subject, $this->content, $headers);
         }
         
+    }
+    public function addAttach($file){
+        $this->attach[]=array('name'=>$_FILES[$file]['name'],'type'=>$_FILES[$file]['type'],'file'=>chunk_split(base64_encode(file_get_contents($_FILES[$file]['tmp_name']))));
     }
     
     public function addRecipient($recipient){

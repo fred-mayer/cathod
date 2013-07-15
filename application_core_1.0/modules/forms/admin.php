@@ -10,15 +10,25 @@ class Tadmin_forms extends TBAdmin
     }
     public function settings($get,$post)
     {
-        $this->db->update("forms",array('name'=>$post->name,'mailto'=>$post->mailto,'mailfrom'=>(($post->mailfromfield!="0")? $post->mailfromfield:$post->mailfrom),'subject'=>$post->subject,'textSuccess'=>$post->afterSend),"id=".$get->id);
+        $id = $this->getIdFormByModule($get->idmodule);
+        $this->db->update("forms",array('name'=>$post->name,'mailto'=>$post->mailto,'mailfrom'=>(($post->mailfromfield!="0")? $post->mailfromfield:$post->mailfrom),'subject'=>$post->subject,'textSuccess'=>$post->afterSend),"id=".$id);
     }
-    public function getFormSettings($idform)
+    public function getFormSettings($idmodule)
     {
+        $idform = $this->getIdFormByModule($idmodule);
         return $this->db->select("SELECT * FROM forms WHERE id=".$idform)->current();
     }
-    public function getFormFields($idform)
+    public function getFormFields($idmodule)
     {
+        $idform = $this->getIdFormByModule($idmodule);
         return $this->db->select("SELECT * FROM forms_fields WHERE id_form=".$idform." ORDER BY `order` ASC")->toObject();
+    }
+    
+    private function getIdFormByModule($idmodule)
+    {
+        $params = json_decode( $this->db->select( 'SELECT params FROM core_modules WHERE id='.$idmodule )->current('params'), true );
+        
+        return $params['id'];
     }
 }
 

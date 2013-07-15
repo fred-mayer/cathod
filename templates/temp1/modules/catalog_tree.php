@@ -17,7 +17,7 @@
                 $(ui.item).parent("ul").find("li").each(function() {
                     cats.push($(this).attr("idcat"));
                 });
-                $.post('/ajax/catalog_tree?action=order&id=<? echo $this->idmodule ?>',{
+                $.post('/ajax/admin/catalog_tree?action=order&id=<? echo $this->idmodule ?>',{
                     'cats':cats.join(',')
                 }, function(data) {
                     
@@ -30,7 +30,7 @@
             if (confirm("Удалить категорию "+$(this).parent("li").find("a").text()+" и все вложенные подкатегории?")) {
                 var id = $(this).parent("li").attr("idcat");
                 var li = $(this).parent("li");
-                $.post('/ajax/catalog_tree?action=delCat&id=<? echo $this->idmodule ?>',{
+                $.post('/ajax/admin/catalog_tree?action=delCat&id=<? echo $this->idmodule ?>',{
                     'idcats':id
                 }, function(data) {
                     li.remove();

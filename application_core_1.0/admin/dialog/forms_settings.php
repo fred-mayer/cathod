@@ -1,6 +1,6 @@
 <?php
-$formSite = $module->admin->getFormSettings($template->get->id);
-$fields = $module->admin->getFormFields($template->get->id);
+$formSite = $module->admin->getFormSettings($template->get->idmodule);
+$fields = $module->admin->getFormFields($template->get->idmodule);
 $this->setTitle( 'Редактировать форму' );
     $form = new TForm();
     $form->beginForm();

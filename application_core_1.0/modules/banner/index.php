@@ -42,6 +42,12 @@ class Tbanner extends TModule
         var_dump($post);
         var_dump( $_FILES);
     }
+    public function getAdminToolbar( $attr )
+    {
+        $buttons[] = array('action'=>'edit', 'icon'=>'pencil', 'text'=>'', 'title'=>'редактировать');
+        
+        return parent::getAdminToolbar( $attr, $buttons );
+    }
 }
 
 ?>

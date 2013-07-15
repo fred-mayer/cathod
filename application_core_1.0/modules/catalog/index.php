@@ -128,6 +128,13 @@ class Tcatalog extends TModule
             }else{ $res=false; }
 	    return $res;
     }
+    public function getAdminToolbar( $attr )
+    {
+        $buttons[] = array('action'=>'addMagazine', 'icon'=>'shopping-cart', 'text'=>'', 'title'=>'Добавить магазин для парсинга товаров');
+        $buttons[] = array('action'=>'magazineCats', 'icon'=>'tasks', 'text'=>'', 'title'=>'Страницы для парсинга');
+        $buttons[] = array('action'=>'parse', 'icon'=>'refresh', 'text'=>'', 'title'=>'Обновить товары с магазинов');
+        
+        return parent::getAdminToolbar( $attr, $buttons );
+    }
 }
-
 ?>

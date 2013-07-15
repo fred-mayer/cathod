@@ -1,5 +1,5 @@
 <?php
-$formSite = $module->admin->getFormSettings($template->get->id);
+$formSite = $module->admin->getFormSettings($template->get->idmodule);
 $this->setTitle( 'Редактировать форму'. $formSite->name );
 
 ob_start();
@@ -51,5 +51,5 @@ $res = ob_get_contents();
 ob_end_clean();
 $this->setBody( $res );
 $this->setNameButtonPrimary( 'Сохранить', $this->urlAction( $template ) );
-    $this->displayDialog();
+$this->displayDialog();
 ?>
