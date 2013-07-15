@@ -18,6 +18,11 @@
  <script type="text/javascript" src="/media/js/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
  <link rel="stylesheet" type="text/css" href="/media/js/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
 <? } ?>
+<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+<script src="/templates/temp1/js/tinymce/tinymce.min.js"></script>
+
+<link href='http://fonts.googleapis.com/css?family=Lobster&subset=cyrillic-ext' rel='stylesheet' type='text/css'>
+<link href="/templates/temp1/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
 </head>
 <body>
 <?php

@@ -187,8 +187,8 @@ class TPages
     {
         return $this->db->select( 'SELECT m.id, p.idpage, p.set_pos, m.name, m.params, p.`hide`, p.level 
                                         FROM core_page_modules p, core_modules m 
-                                        WHERE p.idpage IN (0, '.$idpage.') AND p.idmodule=m.id
-                                            ORDER BY p.idpage, p.level' );
+                                        WHERE p.idpage='.$idpage.' AND p.idmodule=m.id
+                                            ORDER BY p.level' );
     }
 
     protected function getHide_Modules( $idpage, $idmodule, $set_pos )

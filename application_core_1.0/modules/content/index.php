@@ -15,11 +15,7 @@ class Tcontent extends TModule
 
         parent::display( $template );
     }
-    public function displayCategory()
-    {
-        
-    }
-    
+
     public function getAdminToolbar( $attr )
     {
         $buttons[] = array('action'=>'edit', 'icon'=>'pencil', 'text'=>'', 'title'=>'');

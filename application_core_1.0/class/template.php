@@ -237,7 +237,8 @@ class TTemplate
         {
             foreach ( $this->script as $src )
             {
-                echo '<script src="/templates/'.$this->getName().'/js/'.trim($src).'"></script>';
+                if ( trim($src) !== '' )
+                    echo '<script src="/templates/'.$this->getName().'/js/'.trim($src).'"></script>';
             }
         }
         
@@ -251,7 +252,8 @@ class TTemplate
         {
             foreach ( $this->style as $href )
             {
-                echo '<link href="/templates/'.$this->getName().'/style/'.trim($href).'" rel="stylesheet">';
+                if ( trim($href) !== '' )
+                    echo '<link href="/templates/'.$this->getName().'/style/'.trim($href).'" rel="stylesheet">';
             }
         }
     }
@@ -285,12 +287,18 @@ class TTemplate
             <div class="btn-group">
 <?php
 
-                echo $module->getAdminToolbar( $attr );
+            if ( $module->getAdminToolbar( $attr ) )
+            {
 
 ?>
                 <a class="btn btn-mini" module="admin" action="delmodule"<?php echo $attr; ?> href="#"><i class="icon-remove"></i></a>
                 <a class="btn btn-mini move" module="admin" action="upmodule"<?php echo $attr; ?> href="#"><i class="icon-arrow-up"></i></a>
                 <a class="btn btn-mini move" module="admin" action="downmodule"<?php echo $attr; ?> href="#"><i class="icon-arrow-down"></i></a>
+<?php
+
+            }
+
+?>
             </div>
         </div>
 <?php

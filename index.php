@@ -3,6 +3,10 @@
 	//ini_set('display_errors', 1);
 	//error_reporting( E_ERROR );
 
+
+session_start();
+
+
 	define( 'APPLICATION_CORE', 'application_core_1.0' );
 	
 	include_once(APPLICATION_CORE . '/config.php');

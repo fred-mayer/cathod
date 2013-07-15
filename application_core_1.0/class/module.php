@@ -113,10 +113,21 @@ class TModule
         {
             foreach ( $buttons as $button )
             {
-                echo '<a class="btn btn-mini" module="'.$this->getName().'" action="'.$button['action'].'" href="#"'.$attr.(isset($button['title']) ? ' title="'.$button['title'].'"' : '').'>
-                        <i class="icon-'.$button['icon'].'"></i>'.(isset($button['text']) ? ' '.$button['text'] : '').'</a>';
+                if ( isset($button['more']) )
+                {
+                    foreach ( $button['more'] as $key=>$value )
+                    {
+                        $more = '&'.$key.'='.$value;
+                    }
+                }
+
+
+                echo '<a class="btn btn-mini" module="'.$this->getName().'" action="'.$button['action'].'" href="#"'.$attr.(!empty($button['title']) ? ' title="'.$button['title'].'"' : '').(isset($more) ? ' more="'.$more.'"' : '').'>
+                        <i class="icon-'.$button['icon'].'"></i>'.(!empty($button['text']) ? ' '.$button['text'] : '').'</a>';
             }
         }
+        
+        return true;
     }
 }
 ?>
