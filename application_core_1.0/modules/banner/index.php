@@ -31,9 +31,15 @@ class Tbanner extends TModule
             $where .= ' WHERE '.$category;
 
         // Получаем все поля из базы
-        $this->data = $this->db->select( 'SELECT id, src, href, level FROM banner'.$where.' ORDER BY level LIMIT 6' );
-
-        parent::display( $template );
+        $banners = $this->db->select( 'SELECT id, src, href, level FROM banner'.$where.' ORDER BY level LIMIT 6' );
+        if(count($banners)>0){
+        	$this->data = $banners; 
+        	parent::display( $template );
+        }else{
+	        if($template->auth->isAdmin){
+		        echo $template->displaySystemMes('Внимание! Ни одного баннера еще не создано!');
+	        }
+        }
     }
     
     public function add( $get, $post )

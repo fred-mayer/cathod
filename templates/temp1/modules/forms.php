@@ -5,7 +5,6 @@
     $fields = $data['form_fields'];
     $clForm = $data['class_form'];
 ?>
-<div class="forms<?php if ( $template->auth->isAdmin ) echo ' admin-module'; if ( $this->hide == 'hide' ) echo ' unpublished'; ?>" <?php if ( $template->auth->isAdmin ) echo ' idpage="'.$template->idpage.'" idmodule="'.$this->idmodule.'" set_pos="'.$this->set_pos.'" idform="'.$form->id.'"'; ?>>
     <?php //проверка заполненности всех полей для отображения модуля или магазина
     if(isset($data['errors'])): ?>
         <div class="alert">
@@ -25,4 +24,3 @@
         echo $clForm;
         ?>
     <? endif; ?>
-</div>

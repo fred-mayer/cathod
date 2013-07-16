@@ -5,19 +5,32 @@ div.modal > p{
     text-align:center;
 }
 .unpublished{ opacity: 0.4}
+/* контейнер для админа */
+.admin_tools{
+    display:inline;
+}
 .admin-module{
-	border:1px solid rgba(0,0,0,0);
-	box-sizing:border-box;
+    border:1px solid rgba(255,125,125,0.20);
+    box-sizing:border-box;
     -moz-box-sizing:border-box;
     -webkit-box-sizing:border-box;
+    min-height: 200px !important;
+    margin-bottom: 10px;
+    position: relative;
 }
+footer.admin-module, .navbar .admin-module{ min-height: 50px !important;}
 .admin-module:hover{
     /*background:#F2F2F2;*/
     /*padding:20px;*/
     box-sizing:border-box;
     -moz-box-sizing:border-box;
     -webkit-box-sizing:border-box;
-    border:1px dotted rgba(255,125,125,0.50);;
+    border:1px dotted rgba(255,125,125,1.0);
+}
+.admin-module .admin-module{
+    border:1px dotted rgba(125,125,255,1.0);
+    margin: 3px;
+    min-height: 0 !important;
 }
 
 .admin-module .btn-toolbar{
@@ -50,6 +63,8 @@ div.modal > p{
 	opacity: 0.8;
         z-index: 1000;
 }
+
+a[action='addmodule']{ display: block; margin: 5px auto; width:104px; }
 
 header.header{
     min-height: 100px;
@@ -112,6 +127,8 @@ aside nav.nav{
         border-radius: 0 0 4px 4px;
         -moz-border-radius: 0 0 4px 4px;
         -webkit-border-radius: 0 0 4px 4px;
+        position: relative;
+        z-index: 100;
 }
 #admin-sub-panel span {
     cursor: pointer;

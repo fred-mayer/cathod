@@ -88,12 +88,12 @@ $(function(){
 
     $("#admin-sub-panel").click(function(){
 		$("#admin-panel").slideToggle();	
-		var el = $("#shText");  
+		/*var el = $("#shText");  
 		var state = $("#shText").html();
 
-		state = (state == 'Hide' ? '<span id="shText">Админ</span>' : '<span id="shText">Админ</span>');					
+		//state = (state == 'Hide' ? '<span id="shText">Админ</span>' : '<span id="shText">Админ</span>');					
 
-		el.replaceWith(state); 
+		el.replaceWith(state); */
     });
     
     

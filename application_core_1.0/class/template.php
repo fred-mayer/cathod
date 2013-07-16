@@ -53,6 +53,7 @@ class TTemplate
      * @var boolean
     */
     public $isPreview = false;
+    public $displayTools = false;
 
 
     public function __construct( $template_name='' )
@@ -67,6 +68,9 @@ class TTemplate
         
         
         $this->isPreview = isset( $this->get->preview );
+        if($this->auth->isAdmin && !$this->isPreview){
+            $this->displayTools = true;
+        }
     }
 
     /**
@@ -209,7 +213,11 @@ class TTemplate
      */
     public function issetPos( $pos )
     {
-        return isset($this->posModules[$pos]);
+        if($this->displayTools){
+            return true;
+        }else{
+            return isset($this->posModules[$pos]);
+        }
     }
 
     /**
@@ -266,12 +274,34 @@ class TTemplate
      */
     public function getPos( $pos )
     {
+        $this->adminContainerStart();//добавляет контейнер для админа
         if ( isset($this->posModules[$pos]) )
         {
             foreach ( $this->posModules[$pos] as $module )
             {
                 echo $module;//$module->display( $this );
             }
+        }
+        //кнопка добавить
+        $this->buttonAddModule($pos);
+        $this->adminContainerEnd();
+    }
+    /*
+     * 
+     */
+    public function buttonAddModule($pos){
+        if($this->displayTools){
+            ?><a class="btn btn-mini" module="admin" action="addmodule" idpage="<? echo $this->idpage; ?>" set_pos="<? echo $pos ?>" href="#"><i class="icon-plus"></i> Добавить модуль</a><?
+        }
+    }
+    public function adminContainerStart(){
+        if($this->displayTools){
+            ?><div class="admin_tools"><?
+        }
+    }
+    public function adminContainerEnd(){
+        if($this->displayTools){
+            ?></div><?
         }
     }
     /*
@@ -382,6 +412,33 @@ class TTemplate
         include_once( TEMP_DIR.$this->getName().'/404.php' );
         
         exit();
+    }
+    function displaySystemMes($mes){
+	    return '<div class="alert">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    '.$mes.'
+    </div>';
+    }
+    function printAdminPanel(){
+        if($this->auth->isAdmin){
+            ?>
+                <div id="admin-panel">
+                    <p>Админ панель</p>
+                    <div class="btn-toolbar-admin">
+                        <div class="btn-group">
+                            <a href="?preview" class="btn">Предварительный просмотр</a>
+                            <button class="btn" module="admin" action="newpage">Новая страница</button>
+                            <button class="btn" module="admin" action="editpage" idpage="<? echo $this->idpage; ?>">Редактировать страницу</button>
+                            <button class="btn" module="admin" action="copypage" idpage="<? echo $this->idpage; ?>">Клонировать страницу</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="admin-sub-panel">
+                    <span id="shText" class="btn btn-danger">Админ</span>
+                </div>
+            <?
+        }
+        ?><div class="modal" id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;"></div><?
     }
 }
 

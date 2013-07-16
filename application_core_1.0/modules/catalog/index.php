@@ -26,17 +26,23 @@ class Tcatalog extends TModule
                  
              }elseif(isset($route['idCats'])){ //страница категории
                  $ii = count($route['idCats'])-1;
-                 $this->data['items'] = $this->getCatItems($route['idCats'][$ii]);
-                 $this->module_template = "category"; //записали шаблон отображения
+                 $items = $this->getCatItems($route['idCats'][$ii]);
+                 if(count($items)>1){
+                 	$this->data['items'] = $items;
+                 	$this->module_template = "category"; //записали шаблон отображения
+                 	parent::display( $template );
+                 }else{
+                 	if(!$template->auth->isAdmin)
+	                	echo $template->displaySystemMes('К сожалению в этой категории нет товаров.');
+	                else
+	                	echo $template->displaySystemMes('К сожалению в этой категории нет товаров. Возможно вам необходимо запустить парсер!');
+                 }
              }else{
                  //главная страница магазина
                  // надо придумать что здесь отображать) может ничего?
              }
-	}
-	
-        //$this->data = $template->db->select( 'SELECT id, content FROM content WHERE '.$where )->current();
+         }
 
-        parent::display( $template );
     }
     public function getCatItems($alias){
         $db = $this->template->db;
@@ -79,6 +85,7 @@ class Tcatalog extends TModule
             $childIds = substr($childIds,1);
             $items = $this->getItems($childIds,20);
         }
+
         return $items;
     }
     public function getCatBreadcrumbs($catid){

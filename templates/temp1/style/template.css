@@ -7,19 +7,18 @@
 */
 html{ height:100%; padding: 0; margin: 0; }
 body{height:100%; padding: 0; margin: 0; min-height: 100%;}
-body > section { 
-    display: block;
-    background: #C9C9C9;
-}
 body{
-	background: #F5F5F5;
-	font-size: 11px;
+    background: #FFF;
+    font-size: 11px;
 }
 h2{ font-size: 24px; line-height: 25px;}
 h3{ line-height: 21px; font-size: 20px;}
 
+/* стили для пользователя */
 
 ul.nav{font-size: 13px;}
+
+/* стили для модулей */
 
 /* module catalog */
 ul.breadcrumbs li{float:left; margin-right: 5px; vertical-align: middle;}
@@ -55,29 +54,11 @@ i.action{ display: inline-block; position: absolute; right:0; top:0; padding: 3p
 .catalog_tree li.nav-header:hover i.action{ display: block;}
 /* //module catalog_tree */
 
-.block_offers table, .block_offer_detail table{ width: auto; vertical-align: top; padding: 5px; margin: 10px 0; border-bottom:1px dashed #CCC; }
-.block_offers table th, .block_offer_detail th{ padding: 3px; text-align: left;}
-.block_offers table td, .block_offer_detail td{ padding: 3px; text-align: left; height: 40px;}
-
-.block_offer_detail td, .block_offer_detail th{ height: auto; font-size: 12px; padding: 8px}
-.block_offers .row-fluid .span6:nth-of-type(odd){margin-left: 0;}
-
-.descr{ color:#999; font-style: italic;}
-
-.offer{ margin-bottom: 10px; text-shadow: 0 1px 1px #FFF;}
-
-/*.range-rate{position: absolute; top: -15px;}
-.rate-r input, .rate-r span{margin-top:-10px;}*/
-.filter-form{padding-top: 15px; }
-.filter-form .input-append{ vertical-align: top;}
-.range{ margin-top: 5px;}
-
-
-/*.offer{ border: 1px solid #CCC; border-radius: 4px; padding: 5px; margin: 10px; text-shadow: 0 1px 0 #FFF;}*/
-
+/*предопределенные стили шаблона */
 footer{
     margin-top: 30px;
     margin-bottom: 5px;
+    background-color: #F5F5F5;
 }
 
 

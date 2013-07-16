@@ -47,8 +47,8 @@ class Tadmin_admin extends TBAdmin
     public function delmodule( $get, $post )
     {
         $this->db->update( 'core_page_modules', array('hide'=>'hide'), 
-                ($post->pages->__toString() == 'all' ? '' : 'idpage='.$get->idpage->int()).' 
-                    AND idmodule='.$get->idmodule->int().' 
+                ($post->pages->__toString() == 'all' ? '' : 'idpage='.$get->idpage->int().' AND ').' 
+                    idmodule='.$get->idmodule->int().' 
                         AND set_pos=\''.$get->set_pos.'\'' );
     }
     

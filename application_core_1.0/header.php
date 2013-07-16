@@ -10,7 +10,9 @@
 
     foreach ( $files as $file )
     {
-        if ( is_file( CLASS_DIR.$file ) ) include_once( CLASS_DIR.$file );
+        $ext = strtolower(end(explode('.', $file))); //вырезаем расширение у файла
+        if($ext=="php")
+            if ( is_file( CLASS_DIR.$file ) ) include_once( CLASS_DIR.$file );
     }
 
 

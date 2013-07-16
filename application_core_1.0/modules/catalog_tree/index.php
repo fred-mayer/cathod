@@ -12,28 +12,34 @@ class Tcatalog_tree extends TModule
 	   $route = $this->route($template->route);
 	}
         $this->data = $this->getTreeHTML();
-        parent::display( $template );
+        if($this->data !== false)
+            parent::display( $template );
     }
     public function getTreeHTML($par=0,$link='/catalog/',$tree=''){ //сбор дерева категорий
     	
         $defaultLink = $link;
         $res = $this->template->db->select( 'SELECT * FROM catalog_cats WHERE parentid='.$par.' ORDER BY `order` ASC')->toObject();
-        $i=0;
-        //print_r($res);
-        $tree .= '<ul class="nav nav-list">';
-        $adminActions = ( $this->template->auth->isAuthorized )? '<i class="action delete icon-trash"></i>':"";
-        foreach($res as $cat){
-                $link .= $cat->alias.'/';
-        	$tree .= ($par==0)? '<li class="nav-header" idcat="'.$cat->id.'">'.$cat->name .$adminActions.'</li>':'<li class="" idcat="'.$cat->id.'"><a href="'.$link.'">'.$cat->name .'</a>'.$adminActions.'</li>';
-        	$ex = $this->template->db->select( 'SELECT * FROM catalog_cats WHERE parentid='.$cat->id)->toObject();
-        	if(count($ex)>0){ //значит есть подкатегории
-	        	$tree .= $this->getTreeHTML($cat->id,$link);
-        	}
-                $link = $defaultLink;
-        	$i++;
+        if (count($res)>0){
+            $i=0;
+            //print_r($res);
+            $tree .= '<ul class="nav nav-list">';
+            $adminActions = ( $this->template->auth->isAuthorized )? '<i class="action delete icon-trash"></i>':"";
+            foreach($res as $cat){
+                    $link .= $cat->alias.'/';
+                    $tree .= ($par==0)? '<li class="nav-header" idcat="'.$cat->id.'">'.$cat->name .$adminActions.'</li>':'<li class="" idcat="'.$cat->id.'"><a href="'.$link.'">'.$cat->name .'</a>'.$adminActions.'</li>';
+                    $ex = $this->template->db->select( 'SELECT * FROM catalog_cats WHERE parentid='.$cat->id)->toObject();
+                    if(count($ex)>0){ //значит есть подкатегории
+                            $tree .= $this->getTreeHTML($cat->id,$link);
+                    }
+                    $link = $defaultLink;
+                    $i++;
+            }
+            $tree .= '</ul>';
+            return $tree;
+        }else{
+            echo $this->template->displaySystemMes('Нет категорий');
+            return false;
         }
-        $tree .= '</ul>';
-        return $tree;
     }
     public function getTree($par=0,$tree=''){ //сбор дерева категорий
     	

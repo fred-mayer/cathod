@@ -93,7 +93,8 @@ class TDialog
     //
     public function urlAction( TTemplate $template, $action='', $admin=false )
     {
-        return '/ajax/'.( $admin == true ? 'admin/' : '' ).$template->route[0].'?action='.( $action == '' ? $template->get->dialog : $action )
+    
+        return '/ajax/'.( $template->auth->isAuthorized == true ? 'admin/' : '' ).$template->route[0].'?action='.( $action == '' ? $template->get->dialog : $action )
                 .( isset($template->get->id) ? '&id='.$template->get->id : '' )
                 .( isset($template->get->idpage) ? '&idpage='.$template->get->idpage : '' )
                 .( isset($template->get->idmodule) ? '&idmodule='.$template->get->idmodule : '' )
