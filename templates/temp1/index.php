@@ -49,7 +49,7 @@
             <? endif; ?>
             <?php if ( $this->issetPos('right')): ?>
             <aside class="span2 right">
-                <? $this->getPos('section'); ?>
+                <? $this->getPos('right'); ?>
             </aside>
             <? endif ?>
         </div>

@@ -55,7 +55,7 @@ class TForm
         $this->script .= "\n".$script;
     }
     
-    public function ckeditor( $name, $label='',$value )
+    public function ckeditor( $name, $label='',$value='')
     {
         $this->post[] = "'$name',$('#$name').val() ";
 

@@ -1,5 +1,5 @@
-
-    //создание класса и удаление контейнера
+	
+	//создание класса и удаление контейнера
     $(".admin_tools").parent().addClass("admin-module");
     // Диалог удаления модуля (Админ)
     $(".btn-toolbar .btn-group .btn[action=delmodule]").bind("click", function(e){

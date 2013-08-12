@@ -25,6 +25,22 @@ class TDialog
             return false;
     }
 
+    public function loadCurrentDialogByModule( $dialog_dir, TTemplate $template, TModule $module )
+    {
+        if ( isset($template->get->dialog) ) // Загружаем диалог для конкретного модуля
+        {
+            if ( file_exists( $dialog_dir.$template->get->dialog.'.php' ) )
+            {
+                include_once( $dialog_dir.$template->get->dialog.'.php' );
+
+
+                return true;
+            }
+        }
+        else
+            return false;
+    }
+
     public function setTitle( $title )
     {
         $this->title = $title;
@@ -90,11 +106,16 @@ class TDialog
         }
     }
 
-    //
+    /**
+     * Функция urlAction возвращает url ajax для диалоговых окон
+     * @param TTemplate $template
+     * @param string $action
+     * @param boolean $admin ссылка для админа?
+     * @return string
+     */
     public function urlAction( TTemplate $template, $action='', $admin=false )
     {
-    
-        return '/ajax/'.( $template->auth->isAuthorized == true ? 'admin/' : '' ).$template->route[0].'?action='.( $action == '' ? $template->get->dialog : $action )
+        return '/ajax/'.( $admin == true ? 'admin/' : '' ).$template->route[0].'?action='.( $action == '' ? $template->get->dialog : $action )
                 .( isset($template->get->id) ? '&id='.$template->get->id : '' )
                 .( isset($template->get->idpage) ? '&idpage='.$template->get->idpage : '' )
                 .( isset($template->get->idmodule) ? '&idmodule='.$template->get->idmodule : '' )

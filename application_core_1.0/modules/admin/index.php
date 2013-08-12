@@ -17,7 +17,7 @@ class Tadmin extends TModule
     public function getModules( $name='' )
     {
         if ( $name == '' )
-            return $this->template->db->select( 'SELECT * FROM core_modules WHERE exist=0 ORDER BY title' );
+            return $this->template->db->select( 'SELECT * FROM core_modules_group ORDER BY title' );
         else
             return $this->template->db->select( 'SELECT * FROM core_modules WHERE exist=1 AND name=\''.$name.'\' ORDER BY title' );
     }
@@ -26,6 +26,11 @@ class Tadmin extends TModule
     {
 
         parent::display( $template );
+    }
+
+    public function getAdminToolbar( $attr, $buttons=null )
+    {
+        return false;
     }
 }
 

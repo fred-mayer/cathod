@@ -84,11 +84,21 @@ class TTemplate
      */
     public function getModule( $module_name, $params=null, $idmodule=0 )
     {
-        if ( file_exists( MODULES_DIR.$module_name.'/index.php' ) )
+        if ( ($version = $this->db->select( 'SELECT version FROM core_modules_group WHERE name=\''.$module_name.'\'' )->current( 'version' )) !== false )
         {
-            include_once( MODULES_DIR.$module_name.'/index.php' );
+            $v = '_'.$version;
+        }
+        else
+        {
+            $v = '';
+        }
 
-            eval( '$modClass = new T'.$module_name.'($this, \''.$module_name.'\');' ); // возвращаем класс модуля
+
+        if ( file_exists( MODULES_DIR.$module_name.$v.'/index.php' ) )
+        {
+            include_once( MODULES_DIR.$module_name.$v.'/index.php' );
+
+            eval( '$modClass = new T'.$module_name.'($this, \''.$module_name.'\', \''.$version.'\');' ); // возвращаем класс модуля
 
 
             if ( $params ) $modClass->setParams( $params );
@@ -430,6 +440,7 @@ class TTemplate
                             <button class="btn" module="admin" action="newpage">Новая страница</button>
                             <button class="btn" module="admin" action="editpage" idpage="<? echo $this->idpage; ?>">Редактировать страницу</button>
                             <button class="btn" module="admin" action="copypage" idpage="<? echo $this->idpage; ?>">Клонировать страницу</button>
+							<button class="btn" module="admin" action="listmodule">Список модулей</button>
                         </div>
                     </div>
                 </div>

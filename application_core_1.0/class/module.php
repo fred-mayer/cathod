@@ -10,6 +10,7 @@
 class TModule
 {
     protected $name;
+    protected $version;
     protected $data;
     protected $params;
     protected $module_template;
@@ -20,18 +21,21 @@ class TModule
     public $set_pos;
     public $level;
     public $hide;
-    
+    public $adminToolbar=true;
+
     protected $db;
     protected $get;
     protected $post;
     protected $route;
     protected $auth;
 
-    function __construct( $template, $module_name='' )
+    function __construct( $template, $module_name='', $version='' )
     {
         $this->template = $template;
         
         $this->name = $module_name;
+        $this->version = $version;
+        
         $this->db = $this->template->db;
         $this->get = $this->template->get;
         $this->post = $this->template->post;
@@ -41,9 +45,32 @@ class TModule
 
         if ( $this->template->auth->isAdmin && $module_name != '' ) // Если авторизованы то подключаем админ класс
         {
-            if ( file_exists( MODULES_DIR.$module_name.'/admin.php' ) )
+            if ( ($version = $this->getVersion()) != '' )
             {
-                include_once( MODULES_DIR.$module_name.'/admin.php' );
+                $version = '_'.$version;
+            }
+            else
+            {
+                $version = '';
+            }
+
+
+            // Автоматом подгружаем все классы дополнительные класс
+            if ( file_exists( MODULES_DIR.$module_name.$version.'/class/' ) )
+            {
+                $files = scandir( MODULES_DIR.$module_name.$version.'/class/' );
+
+                foreach ( $files as $file )
+                {
+                    if ( is_file( MODULES_DIR.$module_name.$version.'/class/'.$file ) ) 
+                            include_once( MODULES_DIR.$module_name.$version.'/class/'.$file );
+                }
+            }
+
+
+            if ( file_exists( MODULES_DIR.$module_name.$version.'/admin.php' ) )
+            {
+                include_once( MODULES_DIR.$module_name.$version.'/admin.php' );
 
                 $class = 'Tadmin_'.$module_name;
 	        $this->admin = new $class;
@@ -67,13 +94,19 @@ class TModule
         return $this->template->getModule( $module_name, $params, $idmodule );
     }
     
-    public function getParams(){
-	    return $this->params;
+    public function getParams()
+    {
+        return $this->params;
     }
 
     public function getName()
     {
         return $this->name;
+    }
+
+    public function getVersion()
+    {
+        return $this->version;
     }
   
     public function getData()
@@ -87,12 +120,32 @@ class TModule
 
     public function display( TTemplate $template )
     {
-    	if(!$this->module_template){
-	    	$this->module_template = $this->getName();
-    	}else{
-	    	$this->module_template = $this->getName() . "_".$this->module_template;
+        if ( !$this->module_template )
+        {
+            $this->module_template = $this->getName();
     	}
-        include( TEMP_DIR.$template->getName().'/modules/'.$this->module_template.'.php' );
+        else
+        {
+            $this->module_template = $this->getName().'_'.$this->module_template;
+    	}
+        
+        
+        if ( ($version = $this->getVersion()) != '' )
+        {
+            $version = '_'.$version;
+        }
+        else
+        {
+            $version = '';
+        }
+
+
+        if ( file_exists( TEMP_DIR.$template->getName().'/modules/'.$this->module_template.'.php' ) )
+        {
+            include( TEMP_DIR.$template->getName().'/modules/'.$this->module_template.'.php' );
+        }
+        else
+            include( MODULES_DIR.$this->getName().$version.'/template/'.$this->module_template.'.php' );
     }
 
     public function action()

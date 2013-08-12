@@ -72,8 +72,31 @@ final class TMySQLSelect implements Iterator, Countable
     {
         return mysqli_num_rows( $this->qresult );
     }
+    
+    // Функция сортирует по сталбцу $row в алфавитном порядке
+    final public function orderBy( $row ) //return TObject
+    {
+        while( $this->next() )
+        {
+            $array_row[] = $this->array[ $row ];
+            $array_tmp[] = $this->array;
+        }
 
-    final public function toObject()
+        
+        if ( !isset($array_row) ) return false;
+
+        natcasesort( $array_row );
+
+
+        foreach ( $array_row as $key => $value )
+        {
+            $array[]= $array_tmp[ $key ];
+        }
+
+        return new TObject( $array );
+    }
+
+    final public function toObject() //return TObject
     {
         while( $this->next() )
         {
@@ -115,6 +138,11 @@ class TMySQL
             self::$result_transaction[sizeof( self::$result_transaction ) - 1] = ( $result === false) ? false : true;
 
         return $result;
+    }
+
+    final public function multi_query( $query ) //return bool
+    {
+        return mysqli_multi_query( self::$dbh, $query );
     }
 
     public function insert_query( $query ) //return id, в случаи ошибки возвращает false

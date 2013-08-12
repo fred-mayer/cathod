@@ -36,9 +36,12 @@ class TPages
 
             if ( !$dialog->loadCurrentDialog( DIALOG_DIR, $template, $module ) )
             {
-                if ( !$module->action() ) // Диолог не был загружен то попробуем выполнить действие
+                if ( !$dialog->loadCurrentDialogByModule( MODULES_DIR.$module->getName().'/dialog/', $template, $module ) )
                 {
-                    echo 'error get';
+                    if ( !$module->action() ) // Диолог не был загружен то попробуем выполнить действие
+                    {
+                        echo 'error get';
+                    }
                 }
             }
         }
@@ -65,9 +68,22 @@ class TPages
 
                 if ( !$dialog->loadCurrentDialog( ADMIN_DIR.'dialog/', $template, $module ) )
                 {
-                    if ( !$module->admin->action() ) // Диолог не был загружен то попробуем выполнить действие
+                    if ( ($version = $module->getVersion()) != '' )
                     {
-                        echo 'error get';
+                        $version = '_'.$version;
+                    }
+                    else
+                    {
+                        $version = '';
+                    }
+
+
+                    if ( !$dialog->loadCurrentDialogByModule( MODULES_DIR.$module->getName().$version.'/dialog/admin/', $template, $module ) )
+                    {
+                        if ( !$module->admin->action() ) // Диолог не был загружен то попробуем выполнить действие
+                        {
+                            echo 'error get';
+                        }
                     }
                 }
             }
@@ -114,8 +130,8 @@ class TPages
             
             
             //проверяем соответствует ли алиас модулю
-            $isModuleAlias = $this->isModuleAlias($this->alias);
-            if($isModuleAlias!==false){
+            $isModuleAlias = $this->isModuleAlias($this->alias);            
+            if($isModuleAlias!==false){          
                 //$mainModule = $this->getModule($isModuleAlias->id);
                 $m_obj = $template->getModule( $isModuleAlias->name, ($isModuleAlias->params == '') ? '' : json_decode( $isModuleAlias->params, true ) ); // Загружаем модуль и задаем ему позицию
                 $m_obj->idmodule = $isModuleAlias->id;
@@ -157,6 +173,14 @@ class TPages
                     }
                 }
             }
+            
+            
+            // Всегда подключаем админ модуль
+            $m_obj = $template->getModule( 'admin' ); // Загружаем модуль и задаем ему позицию
+            $m_obj->adminToolbar = false;
+
+            $template->setPos( 'admin-panel', $m_obj );
+
         }
 
 
@@ -165,7 +189,7 @@ class TPages
     
     protected function isModuleAlias($alias)
     {
-        return $this->db->select('SELECT * FROM core_modules WHERE `name`=\''.$alias.'\' AND exist=0')->current();
+        return $this->db->select('SELECT * FROM core_modules_group WHERE `name`=\''.$alias.'\' AND exist=1')->current();
     }
     
     protected function getPage( $alias )
