@@ -27,7 +27,7 @@ $items = $data['items'];
                <a class="logoMag" href="<? echo $item->trekking_url ?>" title="<? echo $item->mag_name ?>" rel="tooltip">
                    <img src="/media/images/<? echo $item->logo ?>" />
                </a>
-           <a href="<? echo $item->url ?>">
+           <a href="<? echo $item->item_url ?>">
            <div class="imgblock"><img src="<? echo $item->picture ?>" /></div>
             <div class="title"><? echo $item->name ?></div>
            <div class="params">

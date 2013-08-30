@@ -9,7 +9,7 @@ html{ height:100%; padding: 0; margin: 0; }
 body{height:100%; padding: 0; margin: 0; min-height: 100%;}
 body{
     background: #FFF;
-    font-size: 11px;
+    font-size: 12px;
 }
 h2{ font-size: 24px; line-height: 25px;}
 h3{ line-height: 21px; font-size: 20px;}
@@ -30,17 +30,30 @@ ul.breadcrumbs li h3{ margin: 0; font-weight: normal;}
 .products .product .imgblock{overflow: hidden; height: 241px; vertical-align: middle; line-height: 241px;}
 .products .product a{color:#000;}
 .products .product a:hover{ text-decoration: none;}
-.products .product .title{ color: #999; min-height: 22px; line-height: 11px; margin-bottom: 5px; margin-top: 5px;}
+.products .product .title{ color: #999; min-height: 22px;max-height: 22px; overflow: hidden; line-height: 11px; margin-bottom: 5px; margin-top: 5px;}
 .products .product .params{ position: relative; height: 20px;}
-.products .product .sale{ position:absolute; left:0; width: 50%; color: #FF1111; font-size: 20px; font-weight:bold;}
-.products .product .price{position:absolute; right:0; width: 50%; font-size: 20px; line-height: 20px; vertical-align: top;    text-align: right;
-}
+.sale{color: #FF1111; font-size: 20px; font-weight:bold}
+.products .product .sale{ position:absolute; left:0; width: 50%;}
+.price{font-size: 150%;}
+.products .product .price{position:absolute; right:0; width: 50%; font-size: 20px; line-height: 20px; vertical-align: top;    text-align: right; font-size: 18px;}
+.product_page .price{ font-size: 25px;}
+.images-block{ margin-top: 10px;}
+.images-block img{ cursor: pointer;}
+.images-block img.active{border: 1px solid #0044CC;}
 .products .product small{line-height: 10px;}
-.products .product .price .currency{ font-size: 70%; vertical-align: top;}
-.products .product .oldprice{display:block; font-size: 10px; line-height: 10px; text-decoration: line-through;}
-.currency{ text-transform: uppercase; /*text-decoration: line-through;*/}
-.currency:before{ content: "_"; position: absolute; top:-0.6ex;}
+
+.price .currency{ font-size: 70%; vertical-align: top;}
+.oldprice{display:block; font-size: 10px; line-height: 10px; text-decoration: line-through;}
+.currency{  /*text-decoration: line-through;*/}
+.currency:after{content: "уб."; display: inline;}
+
+#orderform .control-label{text-align: left;}
+input.count{ padding: 0 6px; font-size: 10.5px; min-height: 20px !important; height: 22px;}
+
+/*
+.currency:before { content: "_"; position: absolute; top:-51%;}
 .oldprice .currency:before{content: "";}
+*/
 /* // module catalog */
 
 /*module catalog_tree */

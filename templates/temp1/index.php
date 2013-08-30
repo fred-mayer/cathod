@@ -6,14 +6,14 @@
 <? $this->setStyle("bootstrap.min.css"); ?>
 <? $this->setStyle("bootstrap-responsive.min.css"); ?>
 <? $this->setStyle("template.css"); ?>
-<? $this->setStyle("jquery-ui-1.10.2.custom.css"); ?>
+<? /* <? $this->setStyle("jquery-ui-1.10.2.custom.css"); ?> // Не работает переключатели bootstrap */ ?>
 <script src="http://code.jquery.com/jquery-1.8.1.min.js"></script>
 <? $this->setScript("bootstrap.min.js"); ?>
 <? $this->getHeader(); ?>
 <?php if ( $this->auth->isAuthorized ){ ?>
  <script src="/templates/temp1/js/tinymce/tinymce.min.js"></script>
 <? } ?>
-<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+<? /* <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script> // Не работает переключатели bootstrap */ ?>
 <link href="/templates/temp1/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
 </head>
 <body>
