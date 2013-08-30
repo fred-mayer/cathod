@@ -70,7 +70,7 @@ class Tcatalog_tree extends TModule
         }
         return $res;
     }
-    public function getAdminToolbar( $attr )
+    public function getAdminToolbar( $attr, $buttons=null )
     {
         $buttons[] = array('action'=>'addCat', 'icon'=>'plus', 'text'=>'', 'title'=>'Добавить категорию');
         

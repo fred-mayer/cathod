@@ -3,52 +3,63 @@
 class Tcatalog extends TModule
 {
     protected $pagination = array();
+
     public function display( TTemplate $template )
     {
-		$db = $template->db;
         $params = $this->getParams();
-        $data['idmodule'] = $this->idmodule;
-		//загрузка магазинов с бд
-		$data['magazines']=$db->select("SELECT * FROM catalog_magazine")->toObject();
-        if($params['id']){
-	        //если id указано показывай товары
-	        $data['id'] = $params['id'];
-	        $data['items'] = $this->getItems($data['id']);
-        }else{
+        
+        $this->data['idmodule'] = $this->idmodule;
+        $this->data['magazines'] = $this->db->select( 'SELECT * FROM catalog_magazine' );
+        
+        if ( isset( $params['id']) ) //если id указано показывай товары
+        {
+            $this->data['id'] = $params['id'];
+	    $this->data['items'] = $this->getItems( $this->data['id'] );
+        }
+        else
+        {
 	        //если не указано выводи информацию
         }
-        $this->data = $data;
+
+
         if ( $template->route[0] == $this->getName() && $this->set_pos == 'section' ) // Главный модуль
         {
-             //если есть категория тогда найди все подкатегории и проверь есть ли id товара   
-             $route = $this->route($template->route); //возвращает массив, idItem - id товара, idCats - alias категории
-             if(isset($route['idItem'])){ //страница товара
+            //если есть категория тогда найди все подкатегории и проверь есть ли id товара   
+            $route = $this->route( $template->route ); //возвращает массив, idItem - id товара, idCats - alias категории
+
+            if ( isset($route['idItem']) ) //страница товара
+            {
+                var_dump('страница товара');
+            }
+            elseif ( isset($route['idCats']) ) //страница категории
+            {
+                $items = $this->getCatItems( end( $route['idCats'] ) );
                  
-             }elseif(isset($route['idCats'])){ //страница категории
-                 $ii = count($route['idCats'])-1;
-                 $items = $this->getCatItems($route['idCats'][$ii]);
-                 if(count($items)>1){
-                 	$this->data['items'] = $items;
-                 	$this->module_template = "category"; //записали шаблон отображения
-                 	parent::display( $template );
-                 }else{
-                 	if(!$template->auth->isAdmin)
-	                	echo $template->displaySystemMes('К сожалению в этой категории нет товаров.');
-	                else
-	                	echo $template->displaySystemMes('К сожалению в этой категории нет товаров. Возможно вам необходимо запустить парсер!');
-                 }
-             }else{
+                if ( count($items) > 0 )
+                {
+                    $this->data['items'] = $items;
+                    $this->module_template = 'category'; //записали шаблон отображения
+                    parent::display( $template );
+                }
+                else
+                {
+                    if ( !$template->auth->isAdmin )
+                        echo $template->displaySystemMes('К сожалению в этой категории нет товаров.');
+	            else
+	                echo $template->displaySystemMes('К сожалению в этой категории нет товаров. Возможно вам необходимо запустить парсер!');
+                }
+            }
+            else
+            {
                  //главная страница магазина
                  // надо придумать что здесь отображать) может ничего?
-             }
-         }
+            }
+        }
 
     }
-    public function getCatItems($alias){
-        $db = $this->template->db;
-        //Считываем категорию
-        $cat = $db->select("SELECT * FROM catalog_cats WHERE `hide`=1 && `alias`='$alias'")->current();
-        $this->data['cat'] = $cat;       
+    public function getCatItems( $alias )
+    {
+        $this->data['cat'] = $cat = $this->db->select( "SELECT * FROM catalog_cats WHERE `hide`=1 && `alias`='$alias'" )->current();    
         
         //Создаем breadcrumbs
         $this->pagination = array();
@@ -56,15 +67,19 @@ class Tcatalog extends TModule
         $this->breadcrumbs = array_reverse($this->breadcrumbs);
         $this->data['breadcrumbs'] = $this->breadcrumbs;
         
-        //устанавливаем title *** не работает надо решить!!!!
-        $this->template->setTitle($cat->name);
-        
+
+        $this->template->setTitle( $cat->name );
+
+
         //Считываем товары
-        $sql = "SELECT i.*,m.name as mag_name,m.trekking_url,m.logo 
-            FROM catalog_items AS i LEFT JOIN catalog_magazine AS m ON i.mag_id=m.id 
-            WHERE i.catid=".$cat->id." AND i.hide=1 AND m.hide=1 ORDER BY i.sale, i.price ASC"; //*** добавить разделы страниц
-        $items = $db->select($sql)->toObject();
-        if(count($items)>0){
+        $items = $this->db->select( 'SELECT i.*,m.name as mag_name,m.trekking_url,m.logo 
+                                        FROM catalog_items AS i LEFT JOIN catalog_magazine AS m ON i.id_mag=m.id 
+                                        WHERE i.id_cat='.$cat->id.' 
+                                            AND i.hide=\'false\' 
+                                            AND m.hide=1 
+                                        ORDER BY i.sale, i.price ASC' )->toObject(); //*** добавить разделы страниц
+        if ( count($items)>0 )
+        {
             for($i=0;$i<count($items);$i++){
                 //добавляем рубли к ценам
                 $currency = ($items[$i]->currencyid)? $items[$i]->currencyid:' <span class="currency">р</span>';
@@ -72,12 +87,13 @@ class Tcatalog extends TModule
                 $items[$i]->price_old .= $currency;
 
                 //переводим размеры в массив
-                $size = explode("]",str_replace("[", "", $items[$i]->size));
-                $items[$i]->size = $size;
+                $size = $this->db->select("SELECT field_value FROM catalog_attr 
+                                                WHERE field_name='size' AND iditem=".$items[$i]->id)->current( 'field_value' );
+                $items[$i]->size = new TObject( $size );
             }
         }else{
             //пробуем найти товары в подкатегориях
-            $catsChild = $db->select("SELECT id FROM catalog_cats WHERE `hide`=1 && `parentid`='".$this->data['cat']->id."'")->toObject();
+            $catsChild = $this->db->select("SELECT id FROM catalog_cats WHERE `hide`=1 && `parentid`='".$this->data['cat']->id."'")->toObject();
             $childIds = "";
             foreach($catsChild as $child){
                 $childIds .= ",".$child['id'];
@@ -90,7 +106,7 @@ class Tcatalog extends TModule
     }
     public function getCatBreadcrumbs($catid){
         $db = $this->template->db;
-        $par = $db->select("SELECT * FROM catalog_cats WHERE id=".$catid)->current();
+        $par = $this->db->select("SELECT * FROM catalog_cats WHERE id=".$catid)->current();
         $this->breadcrumbs[] = $par;
         if($par->parentid>0){
             $this->getCatBreadcrumbs($par->parentid);
@@ -119,7 +135,7 @@ class Tcatalog extends TModule
             if($limit>0){
                 $sql .= " LIMIT ".$limit;
             }
-            $res = $db->select($sql)->toObject();
+            $res = $this->db->select($sql)->toObject();
             if(count($res)>0){
                 for($i=0;$i<count($res);$i++){
 
@@ -135,11 +151,11 @@ class Tcatalog extends TModule
             }else{ $res=false; }
 	    return $res;
     }
-    public function getAdminToolbar( $attr )
+    public function getAdminToolbar( $attr, $buttons=null )
     {
         $buttons[] = array('action'=>'addMagazine', 'icon'=>'shopping-cart', 'text'=>'', 'title'=>'Добавить магазин для парсинга товаров');
         $buttons[] = array('action'=>'magazineCats', 'icon'=>'tasks', 'text'=>'', 'title'=>'Страницы для парсинга');
-        $buttons[] = array('action'=>'parse', 'icon'=>'refresh', 'text'=>'', 'title'=>'Обновить товары с магазинов');
+        //$buttons[] = array('action'=>'parse', 'icon'=>'refresh', 'text'=>'', 'title'=>'Обновить товары с магазинов');
         
         return parent::getAdminToolbar( $attr, $buttons );
     }

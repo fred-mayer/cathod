@@ -137,6 +137,8 @@ class TMySQL
         if ( self::$result_transaction[sizeof( self::$result_transaction ) - 1] == true )
             self::$result_transaction[sizeof( self::$result_transaction ) - 1] = ( $result === false) ? false : true;
 
+        if ( !$result ) echo 'Error '.mysqli_error( self::$dbh ).' query - '.$query;
+
         return $result;
     }
 

@@ -17,10 +17,9 @@
     define('POS','');
 
     // mysql
-    //define( 'DB_NAME',      'pricezilla_new' );
-    define( 'DB_NAME',      'myshop' );
-    define( 'DB_USER',      'root' );
-    define( 'DB_PASSWORD',  '' );
+    define( 'DB_NAME',      'dev1' );
+    define( 'DB_USER',      'cmsvitrina' );
+    define( 'DB_PASSWORD',  '7895123' );
     define( 'DB_LOCATION',  'localhost' );
 
     define( 'LANGUAGE', 'ru' );

@@ -6,10 +6,16 @@ class TObject implements Iterator, ArrayAccess, Countable
 
     public function __construct( &$array=null )
     {
-        if ( !is_null( $array ) )
+        if ( is_array( $array ) )
+        {
             $this->array = &$array;
+        }
+        elseif ( is_string( $array ) )
+        {
+            $this->decode_json( $array );
+        }
     }
-    
+
     public function current()
     {
         return $this->offsetGet( $this->key() );
