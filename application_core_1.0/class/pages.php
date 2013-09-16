@@ -52,9 +52,14 @@ class TPages
         if ( $template->auth->isAdmin ) // Если авторизованы как админ
         {
             $this->db = $template->db;
-
-
-            if ( ($module = $template->getModule( $this->alias )) !== false ) // Загружаем модуль
+            if(isset($template->get->idmodule) && $template->get->dialog!='newmodule'){ //если операции связаны с существующими пользовательскими модулями
+                $module_data = $this->getModule($template->get->idmodule->int());
+                $module = $template->getModule( $this->alias,$module_data->params,$module_data->id );
+            }else{
+                $module = $template->getModule( $this->alias );
+            }
+            
+            if ( ($module) !== false ) // Загружаем модуль
             {
                 if ( isset($template->get->idpage) )
                 {
@@ -163,8 +168,17 @@ class TPages
                 {
                     $m_obj = $template->getModule( $m->name, ($m->params == '') ? '' : json_decode( $m->params, true ) ); // Загружаем модуль и задаем ему позицию
                     $m_obj->idmodule = $m->id;
+                    $m_obj->set_pos = $m->set_pos;
                     $m_obj->level = $m->level;
                     $m_obj->hide = $m->idpage == 0 ? $this->getHide_Modules( $page->id, $m->id, $m->set_pos ) : $m->hide;
+                    //модуль закреплен на всех страницах?
+                    $holdModules = $this->getPageModules( 0 );
+                    foreach ( $holdModules as $hm ){
+                        if($hm->id==$m->id){
+                            $m_obj->hold=true;
+                        }
+                    }
+                    
 
 
                     if ( $isModuleAlias === false || ($isModuleAlias !== false && $m->set_pos != 'section') ) // Если главный модуль тогда только он в section присутствует!

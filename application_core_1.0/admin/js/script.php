@@ -66,7 +66,8 @@ $(function(){
                     +(( $(this).attr('id') !== undefined ) ? '&id='+$(this).attr('id') : '')
                     +(( $(this).attr('idpage') !== undefined ) ? '&idpage='+$(this).attr('idpage') : '')
                     +(( $(this).attr('idmodule') !== undefined ) ? '&idmodule='+$(this).attr('idmodule') : '')
-                    +(( $(this).attr('set_pos') !== undefined ) ? '&set_pos='+$(this).attr('set_pos') : '') );
+                    +(( $(this).attr('set_pos') !== undefined ) ? '&set_pos='+$(this).attr('set_pos') : '')
+                    +(( $(this).attr('more') !== undefined ) ? $(this).attr('more') : ''));
         e.preventDefault();
         return false;
     });

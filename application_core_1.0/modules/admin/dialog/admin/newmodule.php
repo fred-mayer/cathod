@@ -1,9 +1,6 @@
 <?php
 
-    $this->setTitle( 'Новый Модуль' );
     
-    $form = new TForm();
-    $form->beginForm();
 
     
     $array[] = array( 'value'=>0, 'title'=>'--Новый модуль--');
@@ -16,7 +13,12 @@
             $array[] = array( 'value'=>$m->id, 'title'=>$m->title);
         }
     }
-
+    $newmodule = $module->getModule($modules->name);
+    
+    $this->setTitle( 'Новый Модуль '.$modules->title );
+    
+    $form = new TForm();
+    $form->beginForm();
 
     $form->select( 'modules', 'Модуль', $array );
 

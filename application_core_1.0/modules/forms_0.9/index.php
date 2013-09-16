@@ -22,6 +22,7 @@ class Tforms extends TModule
             }
         }
         $this->data = $data;
+        
         parent::display( $template );
     }
     public function getAjaxDisplay(){
@@ -71,6 +72,8 @@ class Tforms extends TModule
                     {
                         echo $form->textSuccess;
                     }
+                }else{
+                    echo $error;
                 }
             }
             

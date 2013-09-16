@@ -20,7 +20,7 @@ class Tadmin_content extends TBAdmin
     
     public function insert( $post )
     {
-        $id = $this->db->insert( 'content', array('alias'=>$post->alias, 'content'=>$post->content) );
+        $id = $this->db->insert( 'content', array('content'=>$post->content) );
         
         return array( 'id'=>$id );
     }

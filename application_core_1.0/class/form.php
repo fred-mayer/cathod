@@ -8,6 +8,8 @@ class TForm
     protected $idForm = '';
     protected $ajax = '';
     protected $script = '';
+    protected $attach = false;
+    protected $style = 'form-horizontal';
 
     function __construct( $data=null, $ajax=null )
     {
@@ -24,6 +26,7 @@ class TForm
         $this->form .= ($action)? ' action="'.$action.'"':'';
         $this->form .= ($method)? ' method="'.$method.'"':'';
         $this->form .=' class="'.$style.'">';
+        $this->style = $style;
     }
     public function legend($legend){
         $this->form .= '<legend>'.$legend.'</legend>';
@@ -57,22 +60,23 @@ class TForm
     
     public function ckeditor( $name, $label='',$value='')
     {
-        $this->post[] = "'$name',$('#$name').val() ";
+        $this->post[] = "'$name',tinymce.activeEditor.getContent() ";
 
-        $this->controls( $name, $label, '<textarea style="width:95%; height:10em;" id="'.$name.'" name="'.$name.'">'.( isset($this->data[$name]) ? $this->data[$name] : '' ).$value.'</textarea>
-            <br/><a id="editAct" href="javascript:void(0)"><small>Скрыть/показать редактор</small></a>
-        ' );
+        $this->controls( $name, $label, '<textarea class="ckeditor" style="width:95%; height:10em;" id="'.$name.'" name="'.$name.'">'.( isset($this->data[$name]) ? $this->data[$name] : '' ).$value.'</textarea>' );
         $this->form .= "<script>
-                                tinymce.init({selector:'#".$name."',language : 'ru',
+                                tinymce.init({selector:'#".$name."',language : 'ru',content_css : '/templates/temp1/style/bootstrap.min.css,/templates/temp1/style/template.css',
                                 plugins: [
         'advlist autolink lists link image charmap print preview anchor',
         'searchreplace visualblocks code fullscreen',
         'insertdatetime media table contextmenu paste insert_image'
     ],
+    
     toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image insert_image | code',
                         convert_urls: false,
                         relative_urls: false,
                         remove_script_host: false,
+                        element_format : 'html',
+                        schema: 'html5',
                         setup: function(editor) {
                             editor.on('change', function(e) {
                                 $('#$name').html(tinymce.activeEditor.getContent());
@@ -119,11 +123,7 @@ class TForm
         }
     }
     public function submit($label ){
-        $this->form .= '<div class="control-group">
-        <div class="controls">
-            <button type="submit" class="btn">'.$label.'</button>
-        </div>
-    </div>';
+        $this->form .= '<button type="submit" class="btn btn-primary">'.$label.'</button>';
     }
     public function button( $name, $label, $icon )
     {
@@ -181,6 +181,10 @@ class TForm
         $this->post[]= "'$name',$('#$name').get(0).files[0]";
 
         $this->controls( $name, $label, '<input type="file" id="'.$name.'" name="'.$name.'" />' );
+        $this->html('<div class="progress progress-striped active" id="progress">
+    <div class="bar" style="width: 0%;"></div>
+    </div>');
+        $this->attach = true;
     }
     
     public function textarea( $name, $label,$value='', $id="", $required="", $placeholder="", $pattern="" )
@@ -225,41 +229,59 @@ class TForm
     
     protected function controls( $name, $label, $input )
     {
-        $this->form .= '<div class="control-group">'.( $label == '' ? $input : '<label class="control-label" for="'.$name.'">'.$label.':</label>
-                            <div class="controls">'.$input.'</div>' ).
-                       '</div>';
+        $this->form .= ($this->style=="form-inline")? "":'<div class="control-group">';
+        if($label == ''){
+            $this->form .= $input;
+        }else{
+            $this->form .= '<label class="control-label" for="'.$name.'">'.$label.':</label>'. (($this->style=="form-inline")? $input:'<div class="controls">'.$input.'</div>');
+            
+        }
+        $this->form .= ($this->style=="form-inline")? "":'</div>';
     }
     
     
+    protected function get_d_get_post($obj=true){
+        if($obj){
+            $res = 'function d_get_post(){
+                var formData = {
+                ';
+                foreach($this->post as $post){
+                $pp = explode(",",$post);
+                
+                $res .= "".$pp[0].":".$pp[1].",
+                        ";
+                }
+                $res .= "};";
+        }else{
+            $res = 'function d_get_post(){
+                var formData = new FormData();
+                ';
+            foreach($this->post as $post){
+                $res .= "formData.append(".$post.");
+                    ";
+            }
+        }
+        $res .= '
+            return formData;
+            }
+            ';
+        return $res;
+    }
     
     protected function script()
     {
         $this->form .= '<script>';
         
+        //считываем значение всех полей
         if($this->ajax){ //если неадмин!
-            $this->form .= 'function d_get_post(){
-                var formData = new FormData();
-                ';
-            foreach($this->post as $post){
-                $this->form .= "formData.append(".$post.");
-                    ";
-            }
+            $this->form .= $this->get_d_get_post(false);
         }else{ //если админ
-            $this->form .= 'function d_get_post(){
-                var formData = {
-                ';
-            foreach($this->post as $post){
-                $pp = explode(",",$post);
-                
-                $this->form .= "".$pp[0].":".$pp[1].",
-                    ";
+            if($this->attach===true){ //если прикрепляем файл
+                $this->form .= $this->get_d_get_post(false);
+            }else{ 
+                $this->form .= $this->get_d_get_post();
             }
-            $this->form .= "};";
         }
-        $this->form .= '
-            return formData;
-            }
-            ';
                             
         if($this->script){
             $this->form .= $this->script;

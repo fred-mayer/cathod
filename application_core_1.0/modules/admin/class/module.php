@@ -8,7 +8,6 @@ class TModule_admin extends TInstall_admin
         $m = $this->getModuleGroupById( $get->idmodule->int() );
 
         $m_obj = $this->parent->getModule( $m->name ); // Загружаем модуль и задаем ему позицию
-
         // Заполняем модуль
         $params = $m_obj->admin->insert( $post );
         
@@ -80,8 +79,8 @@ class TModule_admin extends TInstall_admin
     public function delmodule( $get, $post )
     {
         $this->db->update( 'core_page_modules', array('hide'=>'hide'), 
-                ($post->pages->__toString() == 'all' ? '' : 'idpage='.$get->idpage->int()).' 
-                    AND idmodule='.$get->idmodule->int().' 
+                ($post->pages->__toString() == 'all' ? '' : 'idpage='.$get->idpage->int().' AND ').' 
+                    idmodule='.$get->idmodule->int().' 
                         AND set_pos=\''.$get->set_pos.'\'' );
     }
     
@@ -113,7 +112,7 @@ class TModule_admin extends TInstall_admin
     
     public function getModuleGroupById( $idmodule )
     {
-        return $this->db->select( 'SELECT name, version FROM core_modules_group WHERE id='.$idmodule )->current();
+        return $this->db->select( 'SELECT name, version, title, description FROM core_modules_group WHERE id='.$idmodule )->current();
     }
 
     public function getAllModules()

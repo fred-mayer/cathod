@@ -143,6 +143,12 @@ class TObject implements Iterator, ArrayAccess, Countable
         }
     }
     
+    static public function valueObjectToString( &$object){
+        foreach ($object as $o){
+            $o = (string) $o;
+        }
+    }
+    
     // Добавляем массив в объект
     final public function merge( $value )
     {

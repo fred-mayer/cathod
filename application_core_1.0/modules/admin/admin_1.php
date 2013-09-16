@@ -2,6 +2,7 @@
 
 class Tadmin_admin extends TPage//TBAdmin
 {
+    static public $newmodule;
     // Функция создает новый модуль и добавляет на страницу
     public function newmodule( $get, $post )
     {
@@ -88,10 +89,10 @@ class Tadmin_admin extends TPage//TBAdmin
     
     public function delmodule( $get, $post )
     {
-        $this->db->update( 'core_page_modules', array('hide'=>'hide'), 
-                ($post->pages->__toString() == 'all' ? '' : 'idpage='.$get->idpage->int()).' 
-                    AND idmodule='.$get->idmodule->int().' 
-                        AND set_pos=\''.$get->set_pos.'\'' );
+        /*$this->db->update( 'core_page_modules', array('hide'=>'hide'), 
+                ($post->pages->__toString() == 'all' ? '' : 'idpage='.$get->idpage->int().' AND ').' 
+                    idmodule='.$get->idmodule->int().' 
+                        AND set_pos=\''.$get->set_pos.'\'' );*/
     }
     
     public function showmodule( $get, $post )

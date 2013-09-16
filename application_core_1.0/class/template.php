@@ -98,7 +98,8 @@ class TTemplate
         {
             include_once( MODULES_DIR.$module_name.$v.'/index.php' );
 
-            eval( '$modClass = new T'.$module_name.'($this, \''.$module_name.'\', \''.$version.'\');' ); // возвращаем класс модуля
+            $ClassName = 'T'.$module_name;
+            $modClass = new $ClassName($this,$module_name,$version); // возвращаем класс модуля
 
 
             if ( $params ) $modClass->setParams( $params );
@@ -317,23 +318,25 @@ class TTemplate
     /*
      * 
      */
-    public function getAdminToolbar( TModule $module, $attr )
+    public function getAdminToolbar( TModule $module, $attr=null, $butDef=true, $defFunc='getAdminToolbar' )
     {
         if ( $this->auth->isAdmin && !$this->isPreview )
         {
             ob_start();
 ?>
-        <div class="btn-toolbar">
+        <div class="btn-toolbar <? echo ($butDef===false)? "element":"" ?>">
             <div class="btn-group">
 <?php
-
-            if ( $module->getAdminToolbar( $attr ) )
+            //print_r($module->idmodule);
+            if ( $module->$defFunc( $attr ) && $butDef===true )
             {
 
 ?>
+                
                 <a class="btn btn-mini" module="admin" action="delmodule"<?php echo $attr; ?> href="#"><i class="icon-remove"></i></a>
                 <a class="btn btn-mini move" module="admin" action="upmodule"<?php echo $attr; ?> href="#"><i class="icon-arrow-up"></i></a>
                 <a class="btn btn-mini move" module="admin" action="downmodule"<?php echo $attr; ?> href="#"><i class="icon-arrow-down"></i></a>
+                <button type="button" class="btn btn-mini disabled" data-toggle="button"><i class="<? echo ($module->hold)? "icon-lock":"" ?>"></i></button>
 <?php
 
             }
@@ -393,8 +396,12 @@ class TTemplate
         $class = $module->getName().($this->auth->isAdmin && !$this->isPreview ? ' admin-module' : '');
         $attr = ' idpage="'.$this->idpage.'" idmodule="'.$module->idmodule.'" set_pos="'.$module->set_pos.'" level="'.$module->level.'"';
 
-
-        return '<div class="'.$class.'"'.$attr.'>'.$this->getAdminToolbar( $module, $attr ).$html.'</div>';
+        if($this->displayTools===true){
+            return '<div class="'.$class.'"'.$attr.'>'.$this->getAdminToolbar( $module, $attr ).$html.'</div>';
+        }else{
+            return $html;
+        }
+        
     }
 
     /**
@@ -449,7 +456,7 @@ class TTemplate
                 </div>
             <?
         }
-        ?><div class="modal" id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;"></div><?
+        ?><div class="modal admin-modal" id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;"></div><?
     }
 }
 

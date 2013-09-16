@@ -18,10 +18,12 @@ class TModule
     public $template;
     public $admin=null;
     public $idmodule;
+    public $hold=false; //модуль закреплен на всех страницах
     public $set_pos;
     public $level;
     public $hide;
     public $adminToolbar=true;
+    public $icon;
 
     protected $db;
     protected $get;
@@ -42,7 +44,7 @@ class TModule
         $this->route = $this->template->route;
         $this->auth = $this->template->auth;
 
-
+        
         if ( $this->template->auth->isAdmin && $module_name != '' ) // Если авторизованы то подключаем админ класс
         {
             if ( ($version = $this->getVersion()) != '' )
@@ -103,6 +105,13 @@ class TModule
     {
         return $this->name;
     }
+    /*
+     * возвращает всю информацию о модуле
+     */
+    public function getModuleInfo()
+    {
+        return $this->db->select("SELECT * FROM core_modules WHERE id=".$this->idmodule)->current();
+    }
 
     public function getVersion()
     {
@@ -120,6 +129,12 @@ class TModule
 
     public function display( TTemplate $template )
     {
+        //смена шаблон согластно параметрам модуля
+        if(!$this->module_template && isset($this->params['template'])){ //если шаблон не был задан программой и есть в параметрах
+            if($this->params['template']!='default'){
+                $this->module_template = $this->params['template'];
+            }
+        }
         if ( !$this->module_template )
         {
             $this->module_template = $this->getName();
@@ -168,9 +183,10 @@ class TModule
             {
                 if ( isset($button['more']) )
                 {
+                    $more = "";
                     foreach ( $button['more'] as $key=>$value )
                     {
-                        $more = '&'.$key.'='.$value;
+                        $more .= '&'.$key.'='.$value;
                     }
                 }
 

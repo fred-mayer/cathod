@@ -54,17 +54,27 @@ footer.admin-module, .navbar .admin-module{ min-height: 50px !important;}
 	position: absolute;
 	right:0;
 	top:0;
-	background-color: rgba(255,125,125,0.50);
-	padding: 5px;
-	border:1px solid #fff;
+	background-color: rgba(255,125,125,0.5);
+	padding: 3px;
+	border:1px dotted rgba(125,125,255,1.0);
+        border-top:none;
+        border-right:none;
 	border-radius: 4px;
 	-moz-border-radius:4px;
 	-webkit-border-radius: 4px;
 	opacity: 0.8;
         z-index: 1000;
 }
-
-a[action='addmodule']{ display: block; margin: 5px auto; width:104px; }
+.admin-module .btn-toolbar.element .btn-group{
+    background-color: rgba(125,125,255,0.5);
+    left:0;
+    border:1px dotted rgba(125,125,255,1.0);
+    border-top:none;
+    border-right:left;
+    width: auto;
+    right: auto;
+}
+a[action='addmodule']{ display: block; margin: 5px auto; width:110px; }
 
 header.header{
     min-height: 100px;
@@ -135,6 +145,8 @@ aside nav.nav{
     display: block;
     margin-top: -5px;
 }
+.modal.admin-modal{ width: 800px; margin-left: -400px;}
+.thumbnail.newmodules_block{ height: 65px;}
 
 /* стиль формы редактирования и перетаскивания */
 .contanier_drag_drop{ position: relative;}

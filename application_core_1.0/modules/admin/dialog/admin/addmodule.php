@@ -5,20 +5,33 @@
     $this->setTitle( 'Добавить новый модуль' );
     ob_start();
 ?>
-    <form class="form-horizontal">
+    <form>
     	<div class="control-group">
             <label class="control-label" for="modules_new">Модуль:</label>
-            <div class="controls">
-                <select id="modules_new">
+            <div class="row-fluid">
+                <ul class="thumbnails">
 <?php
+                    $i=1;
                     foreach ( $modules as $m )
                     {
-?>
-                    <option value="<? echo $m->id; ?>" exist="<? echo $m->exist; ?>"><? echo $m->title; ?></option>
+                        if($i==4){
+                            ?></ul></div><div class="row-fluid"><ul class="thumbnails"><?
+                            $i=1;
+                        }
+?>                  
+                    <li class="span3">
+                        <div class="thumbnail newmodules_block">
+                            <label class="radio">
+                                <i class="<? echo $m->icon ?>"></i><input type="radio" name="optionsRadios" class="modules_new" value="<? echo $m->id; ?>" exist="<? echo $m->exist; ?>">
+                                <? echo $m->title; ?>
+                            </label>
+                        </div>
+                    </li>
 <?php
+                        $i++;
                     }
 ?>
-                </select>
+                </ul>
             </div>
         </div>
         <div class="control-group">
@@ -26,7 +39,7 @@
             <div class="controls">
                 <select id="pages_new">
                     <option value="current">на текущую страницу</option>
-                    <option value="all">на все страници</option>
+                    <option value="all">на все страницы</option>
                 </select>
             </div>
         </div>
@@ -50,8 +63,8 @@
     }
     $(".modal-footer .btn-primary").bind("click", function(e){
 
-        var exist_module = $('#modules_new option:selected').attr('exist');
-        var id = $('#modules_new option:selected').val();
+        var exist_module = $('.modules_new:checked').attr('exist');
+        var id = $('.modules_new:checked').val();
         var pages = $('#pages_new option:selected').val();
 
         if ( exist_module === '1' ) // существует

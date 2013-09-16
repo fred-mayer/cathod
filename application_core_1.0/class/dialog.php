@@ -82,7 +82,7 @@ class TDialog
         <button class="btn btn-primary"><?php echo $this->btn_primary; ?></button>
     </div>
 <?php
-            if ( $script )
+            if ( $script===true )
             {
 ?>
     <script>
@@ -93,7 +93,14 @@ class TDialog
                 d_start();
             }
 
-            $.post('<?php echo $this->btn_url; ?>', d_get_post(), d_complete);
+            $.post('<?php echo $this->btn_url; ?>', d_get_post(), function(data) {
+                    try {
+                        d_complete();
+                    } catch(e){
+                        alert(data);
+                        location.reload(); //пока можем только перезагрузить страницу(
+                    }
+                });
             
             $('#myModal').html( '<span class="loading"></span>' );
 
@@ -102,6 +109,41 @@ class TDialog
         });
     </script>
 <?php
+            }elseif($script=="attach"){
+                ?>
+                    <script>
+                        $(".modal-footer .btn-primary").bind("click", function(e){
+
+                            var params = d_get_post();
+                            
+                            var xhr = new XMLHttpRequest();
+                            xhr.open( "POST", "<?php echo $this->btn_url; ?>", true );
+                            xhr.setRequestHeader("X-Requested-With", "XmlHttpRequest");
+                            xhr.onreadystatechange = function(){
+
+                                if ( this.readyState === 4 ) // запрос завершён
+                                {
+                                    if ( this.status === 200 ) 
+                                        //d_complete(this.response);
+                                        alert(this.response);
+                                        location.reload(); //пока можем только перезагрузить страницу(
+                                }
+                            };
+                            xhr.upload.addEventListener( "progress", function(e){
+
+                                if ( e.lengthComputable )
+                                {
+                                    $("#progress").css("width",Math.round( e.loaded / e.total * 100 ) + "%");
+                                }
+                            });
+                            xhr.send(params);
+                            $("#process").show();
+
+                            e.preventDefault();
+                            return false;
+                        });
+                    </script>
+                <?
             }
         }
     }

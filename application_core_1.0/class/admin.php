@@ -31,6 +31,26 @@ class TBAdmin
         else
             return false;
     }
+    /**
+     * Функция записывает новые параметры модуля
+     * 
+     * @param int $idmodule - id модуля
+     * @param array $params - параметры модуля
+     */
+    protected function saveModuleParams($idmodule,array $params){
+        return $this->db->update('core_modules',array("params"=>json_encode($params)),"id=".$idmodule);
+    }
+    
+    /*
+     * Записывает имя модуля
+     * 
+     * @param int $idmodule - id модуля
+     * @param string $name - имя модуля 
+     */
+    protected function changeNameModule($idmodule, $name){
+        return $this->db->update('core_modules',array("title"=>$name),"id=".$idmodule);
+    }
+    
 }
 
 ?>

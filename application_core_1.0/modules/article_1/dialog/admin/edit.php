@@ -20,8 +20,7 @@
         $('#myModal').modal( 'hide' );
 
         var btn_toolbar = $("div.content[idmodule=<?php echo $template->get->idmodule->int(); ?>] .btn-toolbar").clone(true);
-        $("div.content[idmodule=<?php echo $template->get->idmodule->int(); ?>]").html();
-        location.reload();
+        $("div.content[idmodule=<?php echo $template->get->idmodule->int(); ?>]").html( tinymce.EditorManager.activeEditor.getContent() );
         btn_toolbar.prependTo("div.content[idmodule=<?php echo $template->get->idmodule->int(); ?>]");
     };
 </script>
