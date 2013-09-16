@@ -12,6 +12,7 @@
     define('DIALOG_DIR',    APPLICATION_CORE.'/dialog/');
 
     define('TMP_DIR',       'tmp/');
+	define('DS',       '/');
     
     //позиции
     define('POS','');

@@ -108,6 +108,7 @@ class Tcatalog extends TModule
         if(isset($route['idItem']))
             $sql .=" AND i.id=".$route['idItem']; //если показываем один товар
         $sql .= " ORDER BY i.sale DESC"; //*** добавить разделы страниц
+        $sql .= " LIMIT 50"; //*** добавить разделы страниц
         $items = $db->select($sql)->toObject();
         if(count($items)>0){
             for($i=0;$i<count($items);$i++){
@@ -544,13 +545,33 @@ class Tcatalog extends TModule
             }else{ $res=false; }
 	    return $res;
     }
-    public function getAdminToolbar( $attr )
+    public function getAdminToolbar( $attr, $buttons = NULL )
     {
         $buttons[] = array('action'=>'addMagazine', 'icon'=>'shopping-cart', 'text'=>'', 'title'=>'Добавить магазин для парсинга товаров');
         $buttons[] = array('action'=>'magazineCats', 'icon'=>'tasks', 'text'=>'', 'title'=>'Страницы для парсинга');
         $buttons[] = array('action'=>'parse', 'icon'=>'refresh', 'text'=>'', 'title'=>'Обновить товары с магазинов');
         
         return parent::getAdminToolbar( $attr, $buttons );
+    }
+    
+    /*
+     * Вызов парсера по всем магазинам
+     */
+    public function parser()
+    {
+        $mags = $this->db->select( 'SELECT * FROM catalog_magazine WHERE hide=1' /*AND id=8*/ );
+
+        foreach ( $mags as $mag )
+        {
+            include_once( MODULES_DIR.$this->getName().($this->getVersion() != '' ? '_'.$this->getVersion() : '').'/parser/parser_'.$mag->script_parser.'.php' );
+
+            eval( '$modClass = new TParser_'.$mag->script_parser.'($this->db, '.$mag->id.');' );
+	}
+        
+        // Чистим мусор, посечаем все необновленые товары как скрытые
+        //$date = new DateTime();
+        //$date->modify('-1 day');
+        //$this->db->query( 'UPDATE catalog_items SET hide=\'true\' WHERE date<\''.$date->format( 'Y-m-d H:i:s' ).'\'' );
     }
 }
 ?>

@@ -1,6 +1,8 @@
 <?php
 
-abstract class TParser_catalog extends TXML_handler_tag
+//error_reporting( E_ERROR | E_NOTICE );
+
+abstract class TParser_catalog
 {
     protected $db;
 
@@ -14,56 +16,71 @@ abstract class TParser_catalog extends TXML_handler_tag
 	foreach ( $cats as $cat )
         {
             // Получаем контент
-            $dom = new DOMDocument();
-            $dom->loadHTMLFile( $cat->url );
-
-            $this->foreach_item( $dom, $cat, $mag );
+            $this->foreach_page( $cat->url, $cat, $mag );
         }
     }
     
-    private function foreach_item( $dom, $cat, $mag )
+    protected function file_get_contents_curl( $url )
     {
-        $divs = $dom->getElementsByTagName( 'div' );
-        foreach ( $divs as $div )
-        {
-            if ( ($attr = $div->attributes->getNamedItem( 'class' )) !== null )
-            {
-                if ( $attr->value == 'divProduct' )
-                {
-                    $this->item( $div, $cat, $mag );
-                }
-            }
-        }
+        $ch = curl_init();
+        curl_setopt( $ch, CURLOPT_HEADER, 0 );
+        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+        curl_setopt( $ch, CURLOPT_URL, $url );
+        //curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, 1 );
+        
+        $data = curl_exec( $ch );
+        
+        curl_close( $ch );
+        
+        return $data;
     }
     
-    private function item( $node, $cat, $mag )
+    protected function foreach_page( $url, $cat, $mag )
+    {
+        var_dump( 'item_cat', $url, $cat->id_cat );
+        
+        // Получаем контент
+        $dom = new DOMDocument();
+        $dom->loadHTML( $this->file_get_contents_curl( $url ) );
+
+        $this->foreach_item( $dom, $cat, $mag );
+
+        return $dom;
+    }
+    
+    abstract protected function foreach_item( $dom, $cat, $mag );
+    
+    protected function item( $node, $cat, $mag )
     {
         $item['id_cat'] = $cat->id_cat;
         $item['id_mag'] = $mag->id;
         
-        $item['url'] = $mag->url.$this->url( $node );
-        $item['picture'] = $this->picture( $node );
-        $item['name'] = $this->name( $node );
+        $item['url'] = $this->url( $node, $mag->url );
+        $item['picture'] = $this->picture( $node, $mag->url );
+        $item['name'] = $this->db->real_escape_string( $this->name( $node ) );
         $item['price'] = $this->price( $node );
         $item['price_old'] = $this->price_old( $node );
-        $item['sale'] = $this->sale( $node );
+        $item['sale'] = $this->db->real_escape_string( $this->sale( $node ) );
         
         // переходим на страницу подробней (получаем все фото, размер, ...)
         $dom = new DOMDocument();
-        $dom->loadHTMLFile( $item['url'] );
+        $dom->loadHTML( $this->file_get_contents_curl( $item['url'] ) );
 
         $attr['size'] = $this->size( $dom );
 
-        $item['description'] = $this->description( $dom );
-        $item['articul'] = $this->articul( $item['description'] );
+        $item['description'] = $this->db->real_escape_string( $this->description( $dom ) );
+        $item['articul'] = $this->db->real_escape_string( $this->articul( $dom ) );
 
         $item['hash'] = md5( $item['id_mag'].$item['url'].$item['name'].$item['articul'] );
         
-        $pictures = $this->pictures( $dom );
+        $pictures = $this->pictures( $dom, $mag->url );
+        
+        if ( $item['picture'] == '' ) $item['picture'] = $pictures[0];
 
-        //var_dump( $item, $attr, $pictures );
-
-        $this->insert( $item, $attr, $pictures );
+//var_dump( $item, $attr, $pictures );
+//exit();
+        if ( !($item['description'] == '' && $item['articul'] == '') )
+            $this->insert( $item, $attr, $pictures );
     }
     
     private function insert( $item, $attr, $pictures )
@@ -73,6 +90,7 @@ abstract class TParser_catalog extends TXML_handler_tag
             $this->db->update( 'catalog_items', array( 'price' => $item['price'], 
                                                        'price_old' => $item['price_old'], 
                                                        'sale' => $item['sale'], 
+                                                       'hide' => 'false', 
                                                        'date' => date('Y-m-d H:i:s') ), 'id='.$id );
 
             $this->update_attr( $id, $attr );
@@ -95,7 +113,8 @@ abstract class TParser_catalog extends TXML_handler_tag
     {
         foreach ( $attr as $key => $value )
         {
-            $this->db->insert( 'catalog_attr', array('iditem'=>$id, 'field_name'=>$key, 'field_value'=>$value) );
+            if ( $value !== null || $value !== '' )
+                $this->db->insert( 'catalog_attr', array('iditem'=>$id, 'field_name'=>$key, 'field_value'=>$value) );
         }
     }
     
@@ -115,9 +134,9 @@ abstract class TParser_catalog extends TXML_handler_tag
         }
     }
 
-    abstract protected function url( $node );
+    abstract protected function url( $node, $url='' );
 
-    abstract protected function picture( $node );
+    abstract protected function picture( $node, $url='' );
 
     abstract protected function name( $node );
 
@@ -135,24 +154,54 @@ abstract class TParser_catalog extends TXML_handler_tag
 
     abstract protected function articul( $node );
     
-    protected function getElement( $node, $tagName, $class )
+    protected function getElement( $node, $tagName, $class='' )
     {
-        $elements = $node->getElementsByTagName( $tagName );
-        foreach ( $elements as $element )
+        //var_dump($tagName, $class);
+
+        if ( ($elements = $node->getElementsByTagName( $tagName )) !== null )
         {
-            if ( ($attr = $element->attributes->getNamedItem( 'class' )) !== null )
+            foreach ( $elements as $element )
             {
-                if ( $attr->value == $class )
-                {
+                if ( $class == '' )
                     return $element;
+
+
+                if ( ($attr = $element->attributes->getNamedItem( 'class' )) !== null )
+                {
+                    if ( $attr->value == $class )
+                    {
+                        return $element;
+                    }
                 }
             }
         }
+        return null;
     }
     
-    protected function getElementValue( $node, $tagName, $class )
+    protected function getElementValue( $node, $tagName, $class='' )
     {
-        return $this->getElement( $node, $tagName, $class )->nodeValue;
+        if ( ($element = $this->getElement( $node, $tagName, $class )) !== null )
+        {
+            return $element->nodeValue;
+        }
+        return '';
+    }
+    
+    
+    
+    protected function getAttributValue( $node, $tagName, $attr )
+    {
+        if ( ($elements = $node->getElementsByTagName( $tagName )) !== null )
+        {
+            foreach ( $elements as $element )
+            {
+                if ( ($a = $element->attributes->getNamedItem( $attr )) !== null )
+                {
+                    return $a->value;
+                }
+            }
+        }
+        return '';
     }
 }
 

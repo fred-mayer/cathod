@@ -39,9 +39,14 @@ $items = $data['items'];
                </div>
                <div class="clearfix"></div>
            </div>
+<?php
+            if ( $item->size !== null )
+            {
+?>
                 <small>Размеры в наличии:
                <div class="sizes"><? 
                $ss="";
+               
                 foreach($item->size as $size){ //***костыль разобраться с objectom
                     $ss .= ($size)? $size . ",":"";
                     
@@ -50,6 +55,10 @@ $items = $data['items'];
                 echo ($ss)? $ss:"&nbsp;";
                ?></div>
                </small>
+
+<?php
+            }
+?>
            </a>
            </div>
        </div>

@@ -5,7 +5,7 @@ class Tcatalog_basket extends TModule
     public function display( TTemplate $template )
     {
         $cookies = new TCookies();
-        if(isset($cookies->busket)){
+        //if(isset($cookies->busket)){
            $coo = json_decode(stripslashes($cookies->busket));
            $countAll = 0; 
            foreach ($coo as $c){
@@ -14,9 +14,9 @@ class Tcatalog_basket extends TModule
            $this->data['count'] = $countAll;
            $this->data['summ'] = $this->getSumCookItems();
            parent::display( $template );
-        }else{
-            echo $template->displaySystemMes("Корзина пуста");
-        }
+        //}else{
+            //echo $template->displaySystemMes("Корзина пуста");
+        //}
     }
     /**
      * Функция возвращает сумму товаров в корзине

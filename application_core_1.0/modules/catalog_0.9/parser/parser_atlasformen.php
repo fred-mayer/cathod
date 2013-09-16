@@ -4,12 +4,27 @@ include_once( 'parser.php' );
 
 class TParser_atlasformen extends TParser_catalog
 {
-    protected function url( $node )
+    protected function foreach_item( $dom, $cat, $mag )
     {
-        return $node->parentNode->attributes->getNamedItem( 'href' )->value;
+        $divs = $dom->getElementsByTagName( 'div' );
+        foreach ( $divs as $div )
+        {
+            if ( ($attr = $div->attributes->getNamedItem( 'class' )) !== null )
+            {
+                if ( $attr->value == 'divProduct' )
+                {
+                    $this->item( $div, $cat, $mag );
+                }
+            }
+        }
     }
 
-    protected function picture( $node )
+    protected function url( $node, $url='' )
+    {
+        return $url.preg_replace( '/^(\/)/', '', $node->parentNode->attributes->getNamedItem( 'href' )->value );
+    }
+
+    protected function picture( $node, $url='' )
     {
         $style = $this->getElement( $node, 'div', 'divTagging' )->attributes->getNamedItem( 'style' )->value;
         return str_replace( "background-image: url('", '', str_replace( "');", '', $style ) );
@@ -53,7 +68,7 @@ class TParser_atlasformen extends TParser_catalog
         return new TObject( $array );
     }
 
-    protected function pictures( $node )
+    protected function pictures( $node, $url='' )
     {
         if ( ($div = $this->getElement( $node, 'div', 'divPDLeft' )) !== null )
         {
@@ -79,7 +94,8 @@ class TParser_atlasformen extends TParser_catalog
 
     protected function articul( $node )
     {
-        preg_match( "/(Артикул:\s+)([^\.\,\s]+)?/", $node, $matches );
+        $desc = $this->description( $node );
+        preg_match( "/(Артикул:\s+)([^\.\,\s]+)?/", $desc, $matches );
         
         return trim( $matches[2] );
     }
