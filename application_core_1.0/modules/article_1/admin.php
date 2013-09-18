@@ -58,7 +58,7 @@ class Tadmin_article extends TBAdmin
         //продолжаем добавление в бд
         $alias = new TString($post->title);
         $alias = $alias->toURI();
-        $this->db->insert('article_items',array('id_cat'=>$post->idcat,'title'=>$post->title,'alias'=>$alias,'introtext'=>$post->content,'image'=>$img));
+        $this->db->insert('article_items',array('id_cat'=>$post->idcat,'title'=>$post->title,'alias'=>$alias,'introtext'=>$post->content,'image'=>$img,'url_readmore'=>$post->url));
         echo "Статья " .$post->title . " сохранена!";
     }
     public function editItem($get,$post){
@@ -74,6 +74,8 @@ class Tadmin_article extends TBAdmin
         $update['title'] = $post->title;
         $update['alias'] = $alias;
         $update['introtext'] = $post->content;
+        $update['url_readmore'] = $post->url;
+        $update['img_readmore'] = ($post->img_readmore=="show")? $post->img_readmore:"hide";
         if($post->delImg=="1" || $img!==null){
             $update['image'] = $img;
         }

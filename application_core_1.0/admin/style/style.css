@@ -74,6 +74,9 @@ footer.admin-module, .navbar .admin-module{ min-height: 50px !important;}
     width: auto;
     right: auto;
 }
+.name_module{position: relative;}
+.name_module div{position: absolute; left:45%; top:0; background-color: rgba(255,125,125,0.5); padding: 2px; font-size: 9px; line-height: 9px; border-radius: 4px; color: rgba(125,125,255,1.0); }
+.admin_tools:hover .name_module div{display: block;}
 a[action='addmodule']{ display: block; margin: 5px auto; width:110px; }
 
 header.header{
@@ -147,6 +150,7 @@ aside nav.nav{
 }
 .modal.admin-modal{ width: 800px; margin-left: -400px;}
 .thumbnail.newmodules_block{ height: 65px;}
+.verysmall{font-size: 10px; line-height: 10px; display: block; color:#666;}
 
 /* стиль формы редактирования и перетаскивания */
 .contanier_drag_drop{ position: relative;}

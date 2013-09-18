@@ -1,5 +1,8 @@
 <?php
-
+    /*
+     * Шаблон для главной странице
+     * 
+     */
     $data = $this->getData();
     $items = $data->getItems();
     $span = 12/$data->cols;
@@ -26,10 +29,10 @@
             ?>
             <div class="thumbnail">
                 <div class="img">
-                <? if(!empty($item->image)){ ?><a href="<? echo $data->route->getRouteArticle($item->alias); ?>"><img src="/<? echo $item->image ?>" alt="<? echo $item->title ?>"></a><? } ?>
+                <? if(!empty($item->image)){ ?><a href="<? echo ($item->url_readmore)? $item->url_readmore:$data->route->getRouteArticle($item->alias); ?>"><img src="/<? echo $item->image ?>" alt="<? echo $item->title ?>"></a><? } ?>
                 </div>
-                <div class="caption"><strong><? echo $item->title ?></strong></div>
-                <? if(!empty($item->introtext)){ ?><p><? echo strip_tags($item->introtext) ?><p><? } ?>
+                <div class="caption"><a href="<? echo ($item->url_readmore)? $item->url_readmore:$data->route->getRouteArticle($item->alias); ?>"><strong><? echo $item->title ?></strong></a></div>
+                
             </div>
         </li>
         <?

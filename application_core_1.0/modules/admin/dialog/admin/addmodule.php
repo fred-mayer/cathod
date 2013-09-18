@@ -25,6 +25,7 @@
                                 <i class="<? echo $m->icon ?>"></i><input type="radio" name="optionsRadios" class="modules_new" value="<? echo $m->id; ?>" exist="<? echo $m->exist; ?>">
                                 <? echo $m->title; ?>
                             </label>
+                            <small class="verysmall"><? echo $m->description ?></small>
                         </div>
                     </li>
 <?php

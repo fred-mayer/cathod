@@ -15,7 +15,7 @@ class TModule
     protected $params;
     protected $module_template;
     
-    public $template;
+    public $template=false;
     public $admin=null;
     public $idmodule;
     public $hold=false; //модуль закреплен на всех страницах
@@ -134,6 +134,9 @@ class TModule
             if($this->params['template']!='default'){
                 $this->module_template = $this->params['template'];
             }
+        }
+        if($this->module_template=='default'){
+            $this->module_template=false;
         }
         if ( !$this->module_template )
         {

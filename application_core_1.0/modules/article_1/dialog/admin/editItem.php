@@ -6,7 +6,7 @@
  */
 $item = $module->admin->getItem($template->get->id->int());
 $this->setTitle( 'Редактировать статью');
-$form = new TForm();
+$form = new TForm(array("img_readmore"=>$item->img_readmore));
 $form->beginForm();
 $params = $module->getParams();
 $params=json_decode($params);
@@ -24,6 +24,8 @@ if(!empty($item->image)){
     $form->inputFile("img","Изображение");
 }
 $form->ckeditor( 'content', '', $item->introtext ); //отредактировать интротекст!!
+$form->inputText("url","Ссылка на подробнее",$item->url_readmore);
+$form->checkbox("img_readmore","Показать изображение в подробном виде статьи","show");
 $form->endForm();
 
 $this->setBody( $form );

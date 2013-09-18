@@ -324,6 +324,7 @@ class TTemplate
         {
             ob_start();
 ?>
+        <? if ($defFunc=="getAdminToolbar"){ ?><div class="name_module"><div><? echo $module->getName() ?></div></div> <? } ?>
         <div class="btn-toolbar <? echo ($butDef===false)? "element":"" ?>">
             <div class="btn-group">
 <?php

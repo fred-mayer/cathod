@@ -12,7 +12,7 @@ class Tarticle extends TModule
             $this->data = $items;
             if(!isset($params['template']))  $this->module_template = "blog";
         }elseif (isset($params['id']) || $this->route->subURIModule===true) { //показываем одну статью
-            echo "Страница статьи";
+            $this->module_template ='default'; //обнуляем шаблон на всякий случай
             $item = new module_article_item($params, $template,$this);
             if($this->route->subURIModule===true){
                 $item->getItemByAlias($this->route[1]);
