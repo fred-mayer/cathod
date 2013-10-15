@@ -7,9 +7,11 @@ class Tcatalog_basket extends TModule
         $cookies = new TCookies();
         //if(isset($cookies->busket)){
            $coo = json_decode(stripslashes($cookies->busket));
-           $countAll = 0; 
-           foreach ($coo as $c){
-               $countAll +=$c->count;
+           $countAll = 0;
+           if(isset($cookies->busket)){
+            foreach ($coo as $c){
+                $countAll +=$c->count;
+            }
            }
            $this->data['count'] = $countAll;
            $this->data['summ'] = $this->getSumCookItems();

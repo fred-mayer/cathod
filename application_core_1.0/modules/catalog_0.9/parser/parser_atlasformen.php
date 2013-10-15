@@ -21,7 +21,7 @@ class TParser_atlasformen extends TParser_catalog
 
     protected function url( $node, $url='' )
     {
-        return $url.preg_replace( '/^(\/)/', '', $node->parentNode->attributes->getNamedItem( 'href' )->value );
+        return $url.DS.preg_replace( '/^(\/)/', '', $node->parentNode->attributes->getNamedItem( 'href' )->value );
     }
 
     protected function picture( $node, $url='' )
@@ -32,7 +32,7 @@ class TParser_atlasformen extends TParser_catalog
 
     protected function name( $node )
     {
-        return $node->getElementsByTagName( 'h1' )->item(0)->nodeValue;
+        return $this->getElementValue( $node, 'div', 'h1-replace');
     }
 
     protected function price( $node )

@@ -16,8 +16,9 @@ class TParser_sapato extends TParser_catalog
             
             $count_p = preg_replace( '([^0-9])', '', $lis->item( $length )->nodeValue );
         }
-//var_dump($count_p);
-//exit();
+var_dump($count_p);
+if($count_p>5)
+    $count_p=5;
         
         for ( $p = 2; $p < $count_p; $p++ )
         {

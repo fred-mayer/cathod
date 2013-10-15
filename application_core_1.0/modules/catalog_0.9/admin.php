@@ -23,6 +23,22 @@ class Tadmin_catalog extends TBAdmin
         }
         //$this->db->update( 'content', array('content'=>$post->content), 'id='.$get->id->int() );
     }
+    public function delItems($get, $post){ 
+        if($post->magid){ //удаляем по магазину
+            $items = $this->db->select("SELECT id FROM catalog_items WHERE id_mag = ".$post->magid)->toObject();
+            foreach($items as $item){
+                $this->db->query("DELETE FROM catalog_attr WHERE iditem=".$item->id);
+                $this->db->query("DELETE FROM catalog_items_params WHERE id_item=".$item->id);
+                $this->db->query("DELETE FROM catalog_pictures WHERE iditem=".$item->id);
+            }
+            //и все товары удаляем
+            $this->db->query("DELETE FROM catalog_items WHERE id_mag=".$post->magid);
+        }
+    }
+    
+    public function getListMags(){
+        return $this->db->select("SELECT `name` as title,`id` as value FROM catalog_magazine WHERE `hide`=1")->toObject();
+    }
     public function magazineCats($get, $post ){
         $cats = $this->db->select("SELECT * FROM catalog_cats")->toObject();
         foreach($cats as $cat){

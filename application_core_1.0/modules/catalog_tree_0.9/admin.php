@@ -57,16 +57,24 @@ class Tadmin_catalog_tree extends TBAdmin
         
         if($post->alias ==""){
             $alias = new TString($post->name);
-            $alias = $alias->toTranslit();
+            $alias = $alias->toURI();
         }else{
             $alias = $post->alias;
+        }
+        //убираем дубли
+        if($this->db->select("SELECT `alias` FROM catalog_cats WHERE alias='".$alias. "'")->current("alias"))
+        {
+            $alias .= "1";
         }
         //определяем последний order
         $order = $this->db->select("SELECT `order` FROM catalog_cats WHERE parentid=".$post->parent. " ORDER BY `order` DESC LIMIT 1")->current();
         $order = $order->order+1;
         $alias = str_replace(" ", "-", $alias);
+        
         $this->db->insert( 'catalog_cats', array('name'=>$post->name,'alias'=>$alias,'parentid'=>$post->parent,'order'=>$order));
     }
+    
+
     
     public function edit( $get, $post )
     {

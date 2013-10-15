@@ -11,14 +11,10 @@ $module = $data['module'];
 ?>
 <div class="catalog product_page" idmodule="<? echo $data['idmodule'] ?>">
     <ul class="breadcrumbs unstyled">
-        <li><a href="/catalog/">Магазин</a></li><li>></li>
-        <?
-        $uri = "/".$module->getName()."/";
-        for($i=0;$i<count($bc);$i++){
-            $uri .=$bc[$i]->alias."/";
-            ?><li><a href="<? echo $uri ?>"><? echo $bc[$i]->name ?></a></li><li>></li><?
-        }
-        ?>
+        <li><a href="/">Магазин</a></li><li>></li>
+        <? foreach($bc as $b){ ?>
+            <li><a href="<? echo $b['link'] ?>"><? echo $b['title'] ?></a></li><li>></li>
+        <? } ?>
         <li><h3><? echo $item->name ?></h3></li>
     </ul>
     <div class="clearfix"></div>
@@ -49,18 +45,19 @@ $module = $data['module'];
             </script>
         </div>
         <div class="span6">
-            <h1><? echo $item->name ?></h1>
+            <h2><? echo $item->name ?></h2>
             <div class="row-fluid">
                 <div class="span6">
                     <div class="price"><? echo $item->price ?><span class="oldprice"><? echo $item->price_old ?></span></div>
                 </div>
                 <div class="span6">
-                    <div class="sale pull-right"><? echo $item->sale ?>%</div>
+                    <div class="sale pull-right"><? echo ($item->sale!=null)? $item->sale."%":"" ?></div>
                 </div>
             </div>
             <div class="row-fluid">
                 <div class="span12">
-                    <strong>Артикул: </strong><? echo $item->articul ?>
+                    <p><strong>Артикул: </strong><? echo $item->articul; ?></P>
+                    <p><a href="<? echo $item->trekking_url.$item->url ?>" target="_blank"><img class="logomag" src="/media/logos/<? echo $item->logo ?>" /></a></p>
                 </div>
             </div>
             <div class="row-fluid">

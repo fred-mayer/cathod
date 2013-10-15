@@ -20,10 +20,11 @@
         ?>
         <tr>
             <td style="width: 60px;">
-                <img src="<? echo $item->picture ?>" style="width: 60px;">
+                <a href="<? echo $item->url ?>"><img src="<? echo $item->picture ?>" style="width: 60px;"></a>
             </td>
             <td>
                 <strong><? echo $item->name ?></strong>
+                Артикул: <strong><? echo $item->articul ?></strong>
                 <p><strong>Размеры:</strong> <? echo $item->sizes ?></p>
                 <?
                 /*
@@ -35,7 +36,7 @@
                 ?>
             </td>
             <td>
-                <a href="<? echo $item->trekking_url ?>"><img src="/media/images/<? echo $item->logo ?>"><? echo $item->mag_name ?></a>
+                <a href="<? echo $item->mag_url ?>"><img src="/media/images/<? echo $item->logo ?>"><? echo $item->mag_name ?></a>
             </td>
             <td>
                 <? echo $item->count ?>

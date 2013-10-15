@@ -19,11 +19,11 @@ $module = $data['module'];
     ?>
     <tr id="<? echo $item->id ?>">
         <td>
-            <div class="row-fluid">
-                <div class="span3">
+            <div class="row">
+                <div class="span1">
                     <a href="<? echo $item->item_url ?>"><img src="<? echo $item->picture ?>"></a>
                 </div>
-                <div class="span9">
+                <div class="span5">
                     <h5><? echo $item->name ?></h5>
                     <div class="row-fluid">
                         <div class="span3"><strong>Количество</strong></div>

@@ -26,6 +26,7 @@
             </td>
             <td>
                 <strong><? echo $item->name ?></strong>
+                Артикул: <strong><? echo $item->articul ?></strong>
                 <p><strong>Размеры:</strong> <? echo $item->sizes ?></p>
                 <?
                 /*

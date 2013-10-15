@@ -4,7 +4,7 @@ include_once( 'parser.php' );
 
 class TParser_lamoda extends TParser_catalog
 {
-    protected function foreach_page( $url, $cat, $mag )
+    /*protected function foreach_page( $url, $cat, $mag )
     {
         $dom = parent::foreach_page( $url, $cat, $mag );
 
@@ -12,14 +12,16 @@ class TParser_lamoda extends TParser_catalog
 //exit();
 
         $count_p = 2;
-        while ( $this->getElement( $dom, 'div', 'content_box' ) !== null )
+        while ( $count_p<12 )
         {
-            parent::foreach_page( $url.'#p='.$count_p, $cat, $mag );
+            
+            $f = $this->getElement( $dom, 'div', 'content_box' );
+            parent::foreach_page( $url.'&p='.$count_p, $cat, $mag );
             $count_p++;
         }
 //var_dump($count_p);
-exit();
-    }
+//exit();
+    }*/
 
     protected function foreach_item( $dom, $cat, $mag )
     {
@@ -54,6 +56,10 @@ exit();
     protected function name( $node )
     {
         return trim( $this->getElementValue( $node, 'span', 'product-name' ) ).' '.trim( $this->getElementValue( $node, 'span', 'grid-brand-name' ) );
+    }
+    protected function brand($node)
+    {
+        return trim( $this->getElementValue($node, "span","item-info-brand-name"));
     }
 
     protected function price( $node )

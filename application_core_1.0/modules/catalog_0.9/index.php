@@ -1,11 +1,17 @@
 <?php
-
+include_once 'helper.php';
 class Tcatalog extends TModule
 {
     protected $pagination = array();
+    protected $get;
+    protected $limit = 50;
+    public $route;
+    
     public function display( TTemplate $template )
     {
-		$db = $template->db;
+        $db = $template->db;
+        $this->get = $template->get;
+        $this->route = new module_catalog_route($template->get,$this);
         $params = $this->getParams();
         $data['idmodule'] = $this->idmodule;
 		//загрузка магазинов с бд
@@ -48,35 +54,40 @@ class Tcatalog extends TModule
                  default:
                      if(isset($route['idItem'])){ //страница товара
                             $this->pagination = array();
-                            $this->getCatBreadcrumbs(count($route['idCats'])-1);
+                            
                             $this->breadcrumbs = array_reverse($this->breadcrumbs);
-                            $this->data['breadcrumbs'] = $this->breadcrumbs;
+                            $this->data['breadcrumbs'] = $this->getItemBradcrumds();
                          
                             $item = $this->getItem($route['idItem']);
+                            $this->template->setTitle($item->name. " - ". $this->template->title);
                             $this->data['item'] = $item;
                             $this->data['module'] = $this;
                             $this->module_template = "item"; //записали шаблон отображения
                             parent::display( $template );
                         }elseif(isset($route['idCats'])){ //страница категории
-                            $items = $this->getCatItems($route);
-                            if(count($items)>1){
+                            $catalog = new module_catalog_categories($this->template->get,$this);
+                            $items = $catalog->getCatItems();
+                            //$items = $this->getCatItems($route);
+                            if($items!==false){
                                    $this->data['items'] = $items;
+                                   $this->data['catalog'] = $catalog;
                                    $this->module_template = "category"; //записали шаблон отображения
                                    parent::display( $template );
-                            }else{
-                                   if(!$template->auth->isAdmin)
-                                           echo $template->displaySystemMes('К сожалению в этой категории нет товаров.');
-                                   else
-                                           echo $template->displaySystemMes('К сожалению в этой категории нет товаров. Возможно вам необходимо запустить парсер!');
                             }
                         }else{
                             //главная страница магазина
-                            // надо придумать что здесь отображать) может ничего?
+                            $mags = $template->db->select("SELECT * FROM catalog_magazine")->toObject();
+                            foreach($mags as $mag){
+                                echo "<h5>".$mag->name."</h5>";
+                                $cats = $template->db->select("SELECT c.name,c.parentid FROM catalog_items as i LEFT JOIN catalog_cats as c ON i.id_cat=c.id WHERE id_mag=".$mag->id." GROUP BY i.id_cat ORDER BY c.order ASC")->toObject();
+                                foreach ($cats as $c){
+                                    $par = $template->db->select("SELECT `name` FROM catalog_cats WHERE id=".$c->parentid)->current("name");
+                                    echo $par." -> ".$c->name . '<br/>';
+                                }
+                            }
                         }
-             }
-             
+             }        
          }
-
     }
     /**
      * функция возвращения списка товаров по uri - catalog/category/subcstegiry/id-item
@@ -84,7 +95,16 @@ class Tcatalog extends TModule
      * @param array $route массив
      * @return array Возвращает список товаров
      */
-    public function getCatItems($route){  
+    public function getCatItems($route){
+        $limit = $this->limit;
+        if (isset($this->get->p) && $this->get->p!="1"){
+            $p = $this->get->p->int();
+            $start = ($p * $limit)+1;
+            $end = ($p * $limit) + $limit;
+        }else{
+            $start = 0;
+            $end = $limit;
+        }
         $db = $this->template->db;
         //Считываем категорию
         $ii = count($route['idCats'])-1;
@@ -99,16 +119,23 @@ class Tcatalog extends TModule
         $this->data['breadcrumbs'] = $this->breadcrumbs;
         
         //устанавливаем title *** не работает надо решить!!!!
-        $this->template->setTitle($cat->name);
+        $this->template->setTitle($cat->name. " - ". $this->template->title);
         
         //Считываем товары
         $sql = "SELECT i.*,m.name as mag_name,m.trekking_url,m.logo,a.field_value as sizes
             FROM catalog_items AS i LEFT JOIN catalog_magazine AS m ON i.id_mag=m.id LEFT JOIN catalog_attr AS a ON i.id=a.iditem
             WHERE i.id_cat=".$cat->id." AND a.field_name='size' AND i.hide='false' AND m.hide=1";
+        // id_mag
+        if(isset($this->get->mag)){
+            $sql .=" AND m.id=".$this->get->mag;
+        }
+        //pagination
+        $sqlp = $sql;
+        $this->pagination = $db->select($sqlp)->count();
         if(isset($route['idItem']))
             $sql .=" AND i.id=".$route['idItem']; //если показываем один товар
         $sql .= " ORDER BY i.sale DESC"; //*** добавить разделы страниц
-        $sql .= " LIMIT 50"; //*** добавить разделы страниц
+        $sql .= " LIMIT ".$start.",".$end; //*** добавить разделы страниц
         $items = $db->select($sql)->toObject();
         if(count($items)>0){
             for($i=0;$i<count($items);$i++){
@@ -126,18 +153,47 @@ class Tcatalog extends TModule
             }
         }else{
             //пробуем найти товары в подкатегориях
-            $catsChild = $db->select("SELECT id FROM catalog_cats WHERE `hide`=1 && `parentid`='".$this->data['cat']->id."'")->toObject();
+            $catsChild = $db->select("SELECT id FROM catalog_cats WHERE `hide`=1  && `parentid`='".$this->data['cat']->id."'")->toObject();
             $childIds = "";
             foreach($catsChild as $child){
                 $childIds .= ",".$child['id'];
             }
             $childIds = substr($childIds,1);
-            $items = $this->getItems($childIds,20);
-        }
-        if(count($items)==1){ //если показываем один товар
-            $items = $items[0];
+            if (!empty($childIds)){
+            $items = $this->getItems($childIds,$start,$end);
+            }
         }
         return $items;
+    }
+    public function getItems($catids,$start,$end,$order="i.sale, i.price ASC"){
+	    $db = $this->template->db;
+	    //Считываем товары
+            //*** добавить разделы страниц
+            $sql = "SELECT i.*,m.name as mag_name,m.trekking_url,m.logo,a.field_value as sizes
+            FROM catalog_items AS i LEFT JOIN catalog_magazine AS m ON i.id_mag=m.id LEFT JOIN catalog_attr AS a ON i.id=a.iditem
+            WHERE i.id_cat IN (".$catids.") AND a.field_name='size' AND i.hide='false' AND m.hide=1";
+            // id_mag
+            if(isset($this->get->mag)){
+                $sql .=" AND m.id=".$this->get->mag;
+            }
+            //pagination
+            $sqlp = $sql;
+            $this->pagination = $db->select($sqlp)->count();
+            
+            $sql .= " ORDER BY i.id DESC"; //*** добавить разделы страниц
+            $sql .= " LIMIT ".$start.",".$end; //*** добавить разделы страниц
+            //echo $sql;
+            $res = $db->select($sql)->toObject();
+            if(count($res)>0){
+                for($i=0;$i<count($res);$i++){
+        //добавляем рубли к ценам
+                        $this->formateItem($res[$i]);
+                         //переводим размеры в массив
+                        $size = json_decode($res[$i]->sizes);
+                        $res[$i]->size = $size;
+                }
+            }else{ $res=false; }
+	    return $res;
     }
     /**
      * Возвращает информацию о товаре по ид
@@ -146,7 +202,7 @@ class Tcatalog extends TModule
      * @return object возвращает информацию о товаре
      */
     private function getItem($id){ //информация о товаре
-        $sql = "SELECT i.*,m.name as mag_name,m.trekking_url,m.logo,c.name as catname 
+        $sql = "SELECT i.*,m.name as mag_name,m.trekking_url,m.logo,c.name as catname,m.url as mag_url 
             FROM catalog_items AS i LEFT JOIN catalog_magazine AS m ON i.id_mag=m.id LEFT JOIN catalog_cats as c ON i.id_cat=c.id
             WHERE i.id=".$id." AND i.hide='false' AND m.hide=1";
         $item = $this->template->db->select($sql)->current();
@@ -231,22 +287,34 @@ class Tcatalog extends TModule
     }
     public function printAttrsSelect($attrs){
         $i=0;
-        foreach($attrs as $attr){
-            ?>
-                <p><strong><? echo $attr->field_name ?></strong>
-                    <div class="btn-group attrs" rel="<? echo $attr->field_name ?>" data-toggle="buttons-radio">
-                    <?
-                    foreach($attr->field_values as $value){
-                        ?>
-                            <button type="button" class="btn"><? echo $value ?></button>
+            foreach($attrs as $attr){
+                if(count($attr->field_values)){
+                ?>
+                    <p><strong><? echo $attr->field_name ?></strong>
+                        <div class="btn-group attrs" rel="<? echo $attr->field_name ?>" data-toggle="buttons-radio">
                         <?
-                    }
+                        $cols = 6;
+                        $i=0;
+                        foreach($attr->field_values as $value){
+                            $i++;
+                            if($i==6){ echo '<br>'; $i=1;}
+                            ?>
+                                <button type="button" class="btn"><? echo $value ?></button>
+                            <?
+                        }
+                        ?>
+                        </div>
+                    </p>
+                <?
+                }else{
                     ?>
-                    </div>
-                </p>
-            <?
-            $i++;
-        }
+                        <div class="btn-group attrs" rel="Размер" data-toggle="buttons-radio" style="display:none">
+                            <button type="button" class="active">One Size</button>
+                        </div>
+                    <?
+                }
+                $i++;
+            }
     }
     public function printBasketButton($id){ //вывод кнопки корзины
         
@@ -449,6 +517,7 @@ class Tcatalog extends TModule
                 }else{
                     $res = $this->template->db->select("SELECT id FROM catalog_buyers WHERE hash='".$hash."'")->current();
                     $id_buyers = $res->id;
+                }
                     // заносим заказ
                     $id_order = $this->template->db->insert('catalog_orders',array(
                         "id_buyers"=>$id_buyers,
@@ -476,27 +545,42 @@ class Tcatalog extends TModule
                     ob_end_clean();
                     $mail->addRecipient($post->email);
                     $mail->setSubject("Ваш заказ принят. № ". $id_order);
-                    $mailfrom = "mail@cathod.ru"; //здесь указывается адрес почты магазина
+                    $mailfrom = "order@newwa.ru"; //здесь указывается адрес почты магазина
                     $mail->setSender($mailfrom);
                     $mail->setBody($message, true);
                     $mail->send();
                     
+                    unset($mail);
+                    $mail = new TMail();
                     //ПИСЬМО АДМИНУ
                     ob_start();
                     include(MODULES_DIR.$this->name."_".$this->version.DS."template".DS."mail_admin.php");
                     $message = ob_get_contents();
                     ob_end_clean();
-                    $mail->addRecipient("fred-mayer@list.ru"); // здесь e-mail админа
+                    $mail->addRecipient("order@newwa.ru"); // здесь e-mail админа
+                    $mail->addRecipient("fred-mayer@list.ru");
                     $mail->setSubject("Поступил новый заказ № ". $id_order);
-                    $mailfrom = "mail@cathod.ru"; //здесь указывается адрес почты магазина
+                    $mailfrom = "order@newwa.ru"; //здесь указывается адрес почты магазина
                     $mail->setSender($mailfrom);
                     $mail->setBody($message, true);
                     $mail->send();
-                    
                     return true;
-                }
             }
         }
+    }
+    public function getItemBradcrumds(){
+        $db = $this->template->db;
+        $route = $this->template->route;
+        if(isset($route[1]) && isset($route[2])){
+            $cat1 = $db->select("SELECT `name` FROM catalog_cats WHERE alias='".$route[1]."'")->current("name");
+            $pag[0]['title'] = $cat1;
+            $pag[0]['link']  = "/catalog/".$route[1];
+            
+            $cat2 = $db->select("SELECT `name` FROM catalog_cats WHERE alias='".$route[2]."'")->current("name");
+            $pag[1]['title'] = $cat2;
+            $pag[1]['link']  = $pag[0]['link'].DS.$route[2];
+        }
+        return $pag;
     }
     public function getCatBreadcrumbs($catid){
         $db = $this->template->db;
@@ -519,37 +603,13 @@ class Tcatalog extends TModule
         }
         return $res;
     }
-    public function getItems($catids,$limit=0,$order="i.sale, i.price ASC"){
-	    $db = $this->template->db;
-	    //Считываем товары
-            //*** добавить разделы страниц
-            $sql = "SELECT i.*,m.name as mag_name,m.trekking_url,m.logo 
-            FROM catalog_items AS i LEFT JOIN catalog_magazine AS m ON i.id_mag=m.id 
-            WHERE i.id_cat IN (".$catids.") AND i.hide='false' AND m.hide=1 ORDER BY i.sale, i.price ASC";
-            if($limit>0){
-                $sql .= " LIMIT ".$limit;
-            }
-            $res = $db->select($sql)->toObject();
-            if(count($res)>0){
-                for($i=0;$i<count($res);$i++){
-
-                    //добавляем рубли к ценам
-                    $currency = ($res[$i]->currencyid)? $res[$i]->currencyid:' <span class="currency">р</span>';
-                    $res[$i]->price .= $currency;
-                    $res[$i]->price_old .= $currency;
-
-                    //переводим размеры в массив
-                    $size = explode("]",str_replace("[", "", $res[$i]->size));
-                    $res[$i]->size = $size;
-                }
-            }else{ $res=false; }
-	    return $res;
-    }
+    
     public function getAdminToolbar( $attr, $buttons = NULL )
     {
         $buttons[] = array('action'=>'addMagazine', 'icon'=>'shopping-cart', 'text'=>'', 'title'=>'Добавить магазин для парсинга товаров');
         $buttons[] = array('action'=>'magazineCats', 'icon'=>'tasks', 'text'=>'', 'title'=>'Страницы для парсинга');
         $buttons[] = array('action'=>'parse', 'icon'=>'refresh', 'text'=>'', 'title'=>'Обновить товары с магазинов');
+        $buttons[] = array('action'=>'delItems', 'icon'=>'remove-sign', 'text'=>'', 'title'=>'Массовое удаление товаров');
         
         return parent::getAdminToolbar( $attr, $buttons );
     }
@@ -557,9 +617,9 @@ class Tcatalog extends TModule
     /*
      * Вызов парсера по всем магазинам
      */
-    public function parser()
+    public function parser($id_mag)
     {
-        $mags = $this->db->select( 'SELECT * FROM catalog_magazine WHERE hide=1' /*AND id=8*/ );
+        $mags = $this->db->select( 'SELECT * FROM catalog_magazine WHERE id='.$id_mag /*AND id=8*/ );
 
         foreach ( $mags as $mag )
         {
@@ -569,9 +629,9 @@ class Tcatalog extends TModule
 	}
         
         // Чистим мусор, посечаем все необновленые товары как скрытые
-        //$date = new DateTime();
-        //$date->modify('-1 day');
-        //$this->db->query( 'UPDATE catalog_items SET hide=\'true\' WHERE date<\''.$date->format( 'Y-m-d H:i:s' ).'\'' );
+        $date = new DateTime();
+        $date->modify('-1 day');
+        $this->db->query( 'UPDATE catalog_items SET hide=\'true\' WHERE id_mag='.$id_mag.' AND date<\''.$date->format( 'Y-m-d H:i:s' ).'\'' );
     }
 }
 ?>

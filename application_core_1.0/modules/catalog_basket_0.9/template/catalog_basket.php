@@ -4,9 +4,8 @@ $count = $data['count'];
 $summ = $data['summ'];
 ?>
 <aside class="basket_module">
-    <h4>Корзина</h4>
     <div class="body">
-        <p><i class="icon-shopping-cart"></i><strong><span class="count_items"><? echo $count ?></span> товар<?
+        <p><strong><span class="count_items"><? echo $count ?></span> товар<?
             if($count<5 && $count>1){
                 echo 'а';
             }elseif($count>=5 || $count==0){

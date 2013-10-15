@@ -23,12 +23,13 @@ class TParser_trendsbrands extends TParser_catalog
 
     protected function picture( $node, $url='' )
     {
-        return $this->getAttributValue( $node, 'img', 'src' );
+        return "http://www.trendsbrands.ru".$this->getAttributValue( $node, 'img', 'src' );
     }
 
     protected function name( $node )
     {
-        return trim( $node->getElementsByTagName( 'h2' )->item(0)->nodeValue );
+        $div = $this->getElement( $node, 'div', 'img' );
+        return strip_tags(trim( $div->getElementsByTagName( 'a' )->item(0)->nodeValue ));
     }
 
     protected function price( $node )

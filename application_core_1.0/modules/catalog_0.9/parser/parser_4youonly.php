@@ -54,7 +54,9 @@ class TParser_4youonly extends TParser_catalog
 
     protected function price( $node )
     {
-        return preg_replace( '([^0-9])', '', $this->getElementValue( $node, 'ins' ) );
+        $price = preg_replace( '([^0-9])', '', $this->getElementValue( $node, 'ins' ) );
+        if($price==""){ $price = preg_replace( '([^0-9])', '', $this->getElementValue( $node, 'div','cost' ) ); }
+        return $price;
     }
 
     protected function price_old( $node )

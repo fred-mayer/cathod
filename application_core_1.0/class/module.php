@@ -25,7 +25,7 @@ class TModule
     public $adminToolbar=true;
     public $icon;
 
-    protected $db;
+    public $db;
     protected $get;
     protected $post;
     protected $route;
