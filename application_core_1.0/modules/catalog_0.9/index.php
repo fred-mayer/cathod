@@ -615,23 +615,34 @@ class Tcatalog extends TModule
     }
     
     /*
-     * Вызов парсера по всем магазинам
+     * Вызов парсера
      */
-    public function parser($id_mag)
+    public function parser( $get, $post )
     {
-        $mags = $this->db->select( 'SELECT * FROM catalog_magazine WHERE id='.$id_mag /*AND id=8*/ );
-
-        foreach ( $mags as $mag )
+        if ( isset($get->skey) && $get->skey == '1q2w3e4r5t' )
         {
             include_once( MODULES_DIR.$this->getName().($this->getVersion() != '' ? '_'.$this->getVersion() : '').'/parser/parser_'.$mag->script_parser.'.php' );
+            //var_dump($post);
+            //return;
+            
+            $where_cat = isset($post->id_cat) ? ' AND c.id_cat='.$post->id_cat->int() : '';
+            $where_mag = isset($post->id_mag) ? ' AND c.id_mag='.$post->id_mag->int() : '';
 
-            eval( '$modClass = new TParser_'.$mag->script_parser.'($this->db, '.$mag->id.');' );
-	}
-        
-        // Чистим мусор, посечаем все необновленые товары как скрытые
-        $date = new DateTime();
-        $date->modify('-1 day');
-        $this->db->query( 'UPDATE catalog_items SET hide=\'true\' WHERE id_mag='.$id_mag.' AND date<\''.$date->format( 'Y-m-d H:i:s' ).'\'' );
+            $cats = $this->db->select( 'SELECT m.id AS id_mag, 
+                                               m.url AS url_mag, 
+                                               m.script_parser, 
+                                               c.id_cat, 
+                                               c.url AS url_cat, 
+                                               c.post
+                                            FROM catalog_mag_cats c, catalog_magazine m 
+                                            WHERE m.id=c.id_mag'.$where_cat.$where_mag );
+            foreach ( $cats as $cat )
+            {
+                include_once( MODULES_DIR.$this->getName().($this->getVersion() != '' ? '_'.$this->getVersion() : '').'/parser/parser_'.$cat->script_parser.'.php' );
+
+                eval( '$modClass = new TParser_'.$cat->script_parser.'( $this->db, $cat );' );
+            }
+        }
     }
 }
 ?>

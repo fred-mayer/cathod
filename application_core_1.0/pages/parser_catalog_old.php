@@ -3,7 +3,6 @@
     <head>
         <meta content="text/html; charset=utf-8" http-equiv="content-type">
         <script src="http://code.jquery.com/jquery-1.8.1.min.js"></script>
-        <title>Парсер</title>
         <style>
             label{display:block;}
             label, textarea{display:block;}
@@ -161,7 +160,7 @@
         
         $("#curr-post").text( $("#mag option[value="+cur_mag_id+"]").text()+" -> "+$("#cat option[value="+cur_cat_id+"]").text() );
         
-        $.post("/ajax/catalog?action=parser&skey=1q2w3e4r5t", { id_mag: cur_mag_id, id_cat: cur_cat_id }, function(data){
+        $.post("/ajax/catalog?action=parser&skey=1q2w3e4r5t", { mag_id: cur_mag_id, cat_id: cur_cat_id }, function(data){
             
             //alert("Data Loaded: "+data);
             $("#log").val( $("#log").val()+data );

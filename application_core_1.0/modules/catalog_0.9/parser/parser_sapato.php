@@ -4,9 +4,9 @@ include_once( 'parser.php' );
 
 class TParser_sapato extends TParser_catalog
 {
-    protected function foreach_page( $url, $cat, $mag )
+    protected function foreach_page( $url, $cat )
     {
-        $dom = parent::foreach_page( $url, $cat, $mag );
+        $dom = parent::foreach_page( $url, $cat );
         
         if ( ($div = $this->getElement( $dom, 'div', 'page-nav' )) !== null )
         {
@@ -22,11 +22,11 @@ if($count_p>5)
         
         for ( $p = 2; $p < $count_p; $p++ )
         {
-            parent::foreach_page( $url.'?page='.$p, $cat, $mag );
+            parent::foreach_page( $url.'?page='.$p, $cat );
         }
     }
 
-    protected function foreach_item( $dom, $cat, $mag )
+    protected function foreach_item( $dom, $cat )
     {
         if ( ($divs = $dom->getElementsByTagName( 'div' )) !== null )
         {
@@ -36,7 +36,7 @@ if($count_p>5)
                 {
                     if ( strpos( $attr->value, 'catalog-item') !== false )
                     {
-                        $this->item( $div, $cat, $mag );
+                        $this->item( $div, $cat );
                     }
                 }
             }

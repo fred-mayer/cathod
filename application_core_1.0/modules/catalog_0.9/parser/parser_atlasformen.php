@@ -4,16 +4,16 @@ include_once( 'parser.php' );
 
 class TParser_atlasformen extends TParser_catalog
 {
-    protected function foreach_item( $dom, $cat, $mag )
+    protected function foreach_item( $dom, $cat )
     {
         $divs = $dom->getElementsByTagName( 'div' );
         foreach ( $divs as $div )
         {
             if ( ($attr = $div->attributes->getNamedItem( 'class' )) !== null )
             {
-                if ( $attr->value == 'divProduct' )
+                if ( $attr->value == 'divProduct' || $attr->value == 'divProduct divProductLast' )
                 {
-                    $this->item( $div, $cat, $mag );
+                    $this->item( $div, $cat );
                 }
             }
         }
@@ -57,7 +57,7 @@ class TParser_atlasformen extends TParser_catalog
             $options = $select->getElementsByTagName( 'option' );
             foreach ( $options as $option )
             {
-                if ( ($attr = $option->attributes->getNamedItem( 'value' )) !== null )
+                if ( ( ($attr = $option->attributes->getNamedItem( 'value' )) !== null ) && ( $option->attributes->getNamedItem( 'disabled' ) === null ) )
                 {
                     if ( $attr->value != '-1' )
                         $array[] = $attr->value;
@@ -97,7 +97,7 @@ class TParser_atlasformen extends TParser_catalog
         $desc = $this->description( $node );
         preg_match( "/(Артикул:\s+)([^\.\,\s]+)?/", $desc, $matches );
         
-        return trim( $matches[2] );
+        return isset($matches[2]) ? trim( $matches[2] ) : '';
     }
 }
 

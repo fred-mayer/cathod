@@ -4,9 +4,9 @@ include_once( 'parser.php' );
 
 class TParser_lamoda extends TParser_catalog
 {
-    /*protected function foreach_page( $url, $cat, $mag )
+    /*protected function foreach_page( $url, $cat )
     {
-        $dom = parent::foreach_page( $url, $cat, $mag );
+        $dom = parent::foreach_page( $url, $cat );
 
 //var_dump($count_p);
 //exit();
@@ -16,14 +16,14 @@ class TParser_lamoda extends TParser_catalog
         {
             
             $f = $this->getElement( $dom, 'div', 'content_box' );
-            parent::foreach_page( $url.'&p='.$count_p, $cat, $mag );
+            parent::foreach_page( $url.'&p='.$count_p, $cat );
             $count_p++;
         }
 //var_dump($count_p);
 //exit();
     }*/
 
-    protected function foreach_item( $dom, $cat, $mag )
+    protected function foreach_item( $dom, $cat )
     {
         if ( ($node = $this->getElement( $dom, 'div', 'content_box' )) !== null )
         {
@@ -35,7 +35,7 @@ class TParser_lamoda extends TParser_catalog
                     {
                         if ( strpos( $attr->value, 'item') !== false )
                         {
-                            $this->item( $li, $cat, $mag );
+                            $this->item( $li, $cat );
                         }
                     }
                 }

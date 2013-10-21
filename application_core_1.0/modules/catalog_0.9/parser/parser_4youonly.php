@@ -4,9 +4,9 @@ include_once( 'parser.php' );
 
 class TParser_4youonly extends TParser_catalog
 {
-    protected function foreach_page( $url, $cat, $mag )
+    protected function foreach_page( $url, $cat )
     {
-        $dom = parent::foreach_page( $url, $cat, $mag );
+        $dom = parent::foreach_page( $url, $cat );
         
         if ( ($div = $this->getElement( $dom, 'ol', 'pagination' )) !== null )
         {
@@ -21,18 +21,18 @@ class TParser_4youonly extends TParser_catalog
         
         for ( $p = 2; $p < $count_p; $p++ )
         {
-            parent::foreach_page( $url.'?PAGEN_2='.$p, $cat, $mag );
+            parent::foreach_page( $url.'?PAGEN_2='.$p, $cat );
         }
     }
 
-    protected function foreach_item( $dom, $cat, $mag )
+    protected function foreach_item( $dom, $cat )
     {
         if ( ($node = $dom->getElementById( 'cataloglist' )) !== null )
         {
             $lis = $node->getElementsByTagName( 'li' );
             foreach ( $lis as $li )
             {
-                $this->item( $li, $cat, $mag );
+                $this->item( $li, $cat );
             }
         }
     }
