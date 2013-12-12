@@ -4,7 +4,7 @@ class TPage_admin extends TModule_admin
 {
     public function newpage( $get, $post )
     {
-        if ( ($idpage = $this->insertPage( $post->alias, $post->template, $post->title, $post->keywords, 
+        if ( ($idpage = $this->insertPage( $post->pagename, $post->alias,$post->parent, $post->template, $post->title, $post->keywords, 
                                            $post->descripion, $post->script, $post->style, $post->hide )) === false )
         {
             echo 'Error newpage';
@@ -40,7 +40,7 @@ class TPage_admin extends TModule_admin
 
     public function editpage( $get, $post )
     {
-        $this->db->update( 'core_page', array('alias'=>$post->alias, 'template'=>$post->template, 'title'=>$post->title, 'keywords'=>$post->keywords,
+        $this->db->update( 'core_page', array('pagename'=>$post->pagename,'alias'=>$post->alias, 'template'=>$post->template, 'title'=>$post->title, 'keywords'=>$post->keywords,
                                               'descripion'=>$post->descripion, 'script'=>$post->script, 'style'=>$post->style, 
                                               'hide'=>($post->hide == '' ? 'show' : $post->hide)), 'id='.$get->idpage->int() );
     }
@@ -56,9 +56,9 @@ class TPage_admin extends TModule_admin
     }
 
 
-    private function insertPage( $alias, $template, $title, $keywords, $descripion, $script, $style, $hide )
+    private function insertPage( $pagename, $alias, $idparent, $template, $title, $keywords, $descripion, $script, $style, $hide )
     {
-        return $this->db->insert( 'core_page', array('alias'=>$alias, 'template'=>$template, 'title'=>$title, 'keywords'=>$keywords,
+        return $this->db->insert( 'core_page', array('pagename'=>$pagename,'alias'=>$alias, 'id_parent'=>$idparent, 'template'=>$template, 'title'=>$title, 'keywords'=>$keywords,
                                                      'descripion'=>$descripion, 'script'=>$script, 'style'=>$style, 
                                                      'hide'=>($hide == '' ? 'show' : $hide)) );
     }

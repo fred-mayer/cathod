@@ -1,14 +1,19 @@
 <?php
 
     $temp = $module->getTemplats();
+    $pages = $module->getPages();
+    $pages[0]->title = "Нет";
+    $pages[0]->value = 0;
 
     $this->setTitle( 'Новая Страница' );
     
     $form = new TForm();
     $form->beginForm();
     
-    $form->inputText( 'title', 'Название' );
+    $form->inputText( 'pagename', 'Название' );
     $form->inputText( 'alias', 'Название URL' );
+    $form->inputText( 'title', 'title страницы' );
+    $form->select( 'parent', 'Родительская страница', $pages );
     $form->textarea( 'keywords', 'Ключевые слова' );
     $form->textarea( 'descripion', 'Описание' );
     $form->textarea( 'script', 'Скрипт' );

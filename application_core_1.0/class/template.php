@@ -230,7 +230,50 @@ class TTemplate
             return isset($this->posModules[$pos]);
         }
     }
-
+    public function getMeta()
+    {
+	    echo '<title>'.$this->title.'</title>';
+        
+        if ( isset($this->meta_descripion) )
+        {
+            echo '<meta name="description" content="'.$this->meta_descripion.'">';
+        }
+        
+        if ( isset($this->meta_keywords) )
+        {
+            echo '<meta name="keywords" content="'.$this->meta_keywords.'">';
+        }
+    }
+    public function getScript()
+    {
+    	if ( $this->auth->isAdmin )
+	    	echo '<script src="/templates/'.$this->getName().'/js/dialog.js"></script>';
+        
+        if ( isset($this->script) )
+        {
+            foreach ( $this->script as $src )
+            {
+                if ( trim($src) !== '' )
+                    echo '<script src="/templates/'.$this->getName().'/js/'.trim($src).'"></script>';
+            }
+        }
+        
+        if ( $this->auth->isAdmin ) // Если авторизованы то подключаем админ скрипт
+        {
+            echo '<script src="/templates/temp1/js/tinymce/tinymce.min.js"></script>';
+            echo '<script src="/admin/script.js"></script>';
+            echo '<link href="/admin/style.css" rel="stylesheet">';
+        }
+        
+        if ( isset($this->style) )
+        {
+            foreach ( $this->style as $href )
+            {
+                if ( trim($href) !== '' )
+                    echo '<link href="/templates/'.$this->getName().'/style/'.trim($href).'" rel="stylesheet">';
+            }
+        }
+    }
     /**
      * Функция выводит заголовок страницы.
      * 
@@ -296,6 +339,13 @@ class TTemplate
         //кнопка добавить
         $this->buttonAddModule($pos);
         $this->adminContainerEnd();
+    }
+    /**
+    * функция удаляет все остальные модули с этой позиции
+    */
+    public function delPos($pos)
+    {
+    	unset($this->posModules[$pos]);
     }
     /*
      * 

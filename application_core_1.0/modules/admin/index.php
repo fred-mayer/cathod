@@ -11,7 +11,12 @@ class Tadmin extends TModule
     // Функция возвращает список шаблонов
     public function getTemplats()
     {
-        return $this->template->db->select( 'SELECT name AS value, title FROM core_templates' );
+        return $this->template->db->select( 'SELECT name AS value, title FROM core_templates' )->toObject();
+    }
+    
+    public function getPages($exclude = null)
+    {
+	    return $this->template->db->select("SELECT id as value, alias as title FROM core_page WHERE id_parent=0".(($exclude!==null)? "AND id!=".$exclude:""))->toObject();;
     }
     
     public function getModules( $name='' )

@@ -12,7 +12,7 @@ class TPages
     protected $db;
     protected $alias;
 
-    function __construct( $alias )
+    function __construct( $alias="" )
     {
         $this->alias = $alias;
     }
@@ -111,9 +111,8 @@ class TPages
         }
         else
         {
-            $page = $this->getPage( $this->alias ); // Получаем из базы все что знаем о странице
-
-            if ( $page === false )
+            $page = $this->getPage( $template->route ); // Получаем из базы все что знаем о странице
+            if ( empty($page) )
             {
                 $template->_404(); // 404
             }
@@ -208,7 +207,34 @@ class TPages
     
     protected function getPage( $alias )
     {
-        return $this->db->select( 'SELECT * FROM core_page WHERE alias=\''.$alias.'\'' )->current();
+        //var_dump($alias);
+        //exit();
+        if (isset($alias[0]))
+        {
+	        $pagename = $alias[0];
+	        //ищем детей
+	        $parent = "";
+	        for($i=0;$i<count($alias);$i++)
+	        {
+		        if(!empty($alias[$i])){
+			        $res = $this->db->select( "SELECT * FROM core_page WHERE alias='".$alias[$i]."'". (($i==0)? " AND id_parent=0":"") . ((!empty($parent))? " AND id_parent=".$parent->id:"") )->current();
+			        if(isset($res->id)){ //Страница есть
+			        	$page = $res;
+				        $parent = $res;
+		        	}
+		        	if(!isset($res->id) && !empty($parent)){
+			        	return null;
+			        	break;
+		        	}
+		        }
+		        
+	        }
+	        
+        }else{
+	        $pagename = 'default';
+	        $page = $this->db->select( 'SELECT * FROM core_page WHERE alias=\''.$pagename.'\'' )->current();
+        }
+        return $page;
     }
     
     protected function getPageById( $idpage )

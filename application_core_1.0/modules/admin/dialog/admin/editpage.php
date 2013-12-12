@@ -8,8 +8,9 @@
     $form = new TForm( $data );
     $form->beginForm();
     
-    $form->inputText( 'title', 'Название' );
+    $form->inputText( 'pagename', 'Название' );
     $form->inputText( 'alias', 'Название URL' );
+    $form->inputText( 'title', 'title страницы' );
     $form->textarea( 'keywords', 'Ключевые слова' );
     $form->textarea( 'descripion', 'Описание' );
     $form->textarea( 'script', 'Скрипт' );

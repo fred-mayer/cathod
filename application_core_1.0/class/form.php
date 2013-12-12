@@ -10,6 +10,7 @@ class TForm
     protected $script = '';
     protected $attach = false;
     protected $style = 'form-horizontal';
+    protected $d_complete;
 
     function __construct( $data=null, $ajax=null )
     {
@@ -17,7 +18,7 @@ class TForm
         if($ajax) $this->ajax=$ajax;
     }
 
-    public function beginForm($id="",$name="",$action="",$method="",$style="form-horizontal")
+    public function beginForm($id="noid",$name="",$action="",$method="",$style="form-horizontal")
     {
         $this->form .= '<form'; 
         $this->form .= ($id)? ' id="'.$id.'"':'';
@@ -62,9 +63,9 @@ class TForm
     {
         $this->post[] = "'$name',tinymce.activeEditor.getContent() ";
 
-        $this->controls( $name, $label, '<textarea class="ckeditor" style="width:95%; height:10em;" id="'.$name.'" name="'.$name.'">'.( isset($this->data[$name]) ? $this->data[$name] : '' ).$value.'</textarea>' );
+        $this->controls( $name, $label, '<textarea class="ckeditor" style="width:95%; height:17em;" id="'.$name.'" name="'.$name.'">'.( isset($this->data[$name]) ? $this->data[$name] : '' ).$value.'</textarea>' );
         $this->form .= "<script>
-                                tinymce.init({selector:'#".$name."',language : 'ru',content_css : '/templates/temp1/style/bootstrap.min.css,/templates/temp1/style/template.css',
+                                tinymce.init({selector:'#".$name."',language : 'ru',content_css : '/templates/temp1/style/bootstrap.min.css',
                                 plugins: [
         'advlist autolink lists link image charmap print preview anchor',
         'searchreplace visualblocks code fullscreen',
@@ -103,7 +104,7 @@ class TForm
                             <input type="checkbox" id="'.$nameid.'" name="'.$name.'" value="'.$value.'"'.( isset($this->data[$name]) && $this->data[$name] == $value ? ' checked' : '' ).'>'.$label.
                        '</label>';
     }
-    public function insertField($type,$name, $label="", $value='', $id="", $required="", $placeholder="", $pattern=''){
+    public function insertField($type,$name, $label="", $value='', $id="", $required="", $placeholder="", $pattern='',$options=''){
         switch ($type){
             case "inputText":
                 $this->inputText($name, $label, $value, $id, $required, $placeholder, $pattern);
@@ -119,6 +120,9 @@ class TForm
             break;
             case "file":
                 $this->inputFile($name, $label);
+            break;
+            case "select":
+                $this->select($name, $label, $options, $value);
             break;
         }
     }
@@ -139,7 +143,7 @@ class TForm
     
     public function hidden( $name, $value )
     {
-        $this->post[]= "'$name',$('#$name').val() ";
+        $this->post[]= "'$name',$('#".$this->idForm." #$name').val() ";
 
         $this->form .= '<input type="hidden" id="'.$name.'" name="'.$name.'" value="'.$value.'" />';
     }
@@ -167,7 +171,7 @@ class TForm
     }
     public function inputText( $name, $label="", $value='', $id="", $required="", $placeholder="", $pattern="",$type="text" )
     {
-        $this->post[]= "'$name',$('#$name').val() ";
+        $this->post[]= "'$name',$('#".$this->idForm." #$name').val() ";
         $input = '<input type="'.$type.'" id="'.$name.'" name="'.$name.'" value="'.( isset($this->data[$name]) ? $this->data[$name] : '' ).(($value)? $value:'').'"';
         $input .= ($required)? " required":"";
         $input .= ($placeholder)? ' placeholder="'.$placeholder.'"':'';
@@ -178,7 +182,7 @@ class TForm
     
     public function inputFile( $name, $label )
     {
-        $this->post[]= "'$name',$('#$name').get(0).files[0]";
+        $this->post[]= "'$name',$('#".$this->idForm." #$name').get(0).files[0]";
 
         $this->controls( $name, $label, '<input type="file" id="'.$name.'" name="'.$name.'" />' );
         $this->html('<div class="progress progress-striped active" id="progress">
@@ -189,21 +193,24 @@ class TForm
     
     public function textarea( $name, $label,$value='', $id="", $required="", $placeholder="", $pattern="" )
     {
-        $this->post[]= "'$name',$('#$name').val() ";
+        $this->post[]= "'$name',$('#".$this->idForm." #$name').val() ";
         
-        $this->controls( $name, $label, '<textarea id="'.$name.'" name="'.$name.'" '.(($placeholder)? ' placeholder="'.$placeholder.'"':'').' '.(($pattern)? ' pattern="'.$pattern.'"':'').' '.(($required)? " required":"").' >'.( isset($this->data[$name]) ? $this->data[$name] : '' ).'</textarea>' );
+        $this->controls( $name, $label, '<textarea id="'.$name.'" name="'.$name.'" '.(($placeholder)? ' placeholder="'.$placeholder.'"':'').' '.(($pattern)? ' pattern="'.$pattern.'"':'').' '.(($required)? " required":"").' >'.( isset($this->data[$name]) ? $this->data[$name] : '' ).$value.'</textarea>' );
     }
     
     public function select( $name, $label, $option, $value="" )
     {
-        $this->post[]= "'$name',$('#$name option:selected').val() ";
+        $this->post[]= "'$name',$('#".$this->idForm." #$name option:selected').val() ";
 
         $s_option = '';
         foreach ( $option as $o )
         {
-            $s_option .= '<option value="'.$o['value'].'" '.(($value==$o['value'])? "selected":"").' >'.$o['title'].'</option>';
+            if(is_array($o) || is_object($o)){
+                $s_option .= '<option value="'.$o['value'].'" '.(($value==$o['value'])? "selected":"").' >'.$o['title'].'</option>';
+            }else{
+                $s_option .= '<option value="'.$o.'" '.(($value==$o)? "selected":"").' >'.$o.'</option>';
+            }
         }
-
         $this->controls( $name, $label, '<select id="'.$name.'" name="'.$name.'">'.$s_option.'</select>' );
     }
     
@@ -218,6 +225,10 @@ class TForm
     public function html($html)
     {
         $this->form .= $html;
+    }
+    public function setD_complete($data) 
+    { //устанавливаем контейнер для сообщения об отправки
+        $this->d_complete = $data;
     }
 
     public function __toString()
@@ -331,13 +342,21 @@ class TForm
             });';
              * 
              */
-            $this->form .= ' return false; });
-                function d_complete(data)
-    {
-        $(".forms").html(data);
-    };
-
-';
+            $this->form .= ' return false; });';
+            if(!empty($this->d_complete))
+            {
+                $this->form .= 'function d_complete(data)
+                            {
+                                $("#'.$this->idForm.' '.$this->d_complete.'").html(data);
+                            };'; 
+                        //
+            }else{
+               $this->form .= 'function d_complete(data)
+                            {
+                                $(".forms").html(data);
+                            };'; 
+            }
+                            
         }
         $this->form .='</script>';
     }
