@@ -350,7 +350,7 @@ INSERT INTO `core_modules` (`id`, `title`, `name`, `params`, `exist`) VALUES
 (1, 'Категории каталога товаров', 'catalog_tree', '', 1),
 (2, 'Каталог товаров', 'catalog', '', 1),
 (3, 'Корзина', 'catalog_basket', '', 1),
-(4, 'Хлебные крошки', 'breadcrumb', '', 1)
+(4, 'Хлебные крошки', 'breadcrumb', '', 1);
 
 -- --------------------------------------------------------
 
@@ -415,7 +415,7 @@ CREATE TABLE IF NOT EXISTS `core_page` (
 --
 
 INSERT INTO `core_page` (`id`, `id_parent`, `pagename`, `alias`, `template`, `title`, `keywords`, `descripion`, `script`, `style`, `hide`) VALUES
-(1, 0, '', 'default', '', 'Профинжиниринг | Вентиляция и кондицианирование помещений', '', '', '', '', 'show')
+(1, 0, '', 'default', '', 'Вконтактер))', '', '', '', '', 'show');
 -- --------------------------------------------------------
 
 --
