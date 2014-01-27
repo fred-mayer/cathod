@@ -18,8 +18,8 @@
     define('POS','');
 
     // mysql
-    define( 'DB_NAME',      'dev1' );
-    define( 'DB_USER',      'cmsvitrina' );
+    define( 'DB_NAME',      'triposnew' );
+    define( 'DB_USER',      'user' );
     define( 'DB_PASSWORD',  '7895123' );
     define( 'DB_LOCATION',  'localhost' );
 

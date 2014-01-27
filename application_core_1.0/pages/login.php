@@ -1,7 +1,6 @@
 <?php
 
     $template->setTitle( 'Login' );
-    $template->setStyle( 'style.css' );
 
     
     if ( !$template->auth->isAuthorized )
@@ -27,7 +26,6 @@
         // ПОЛЬЗОВАТЕЛЬ АВТОРИЗОВАН
         $template->location();
     }
-
 
     $login = $template->getModule( 'login', (isset($error) ? array( 'error'=>$error, 'login'=>$post->login ) : '') );
 

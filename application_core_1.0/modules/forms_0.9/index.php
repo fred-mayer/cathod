@@ -14,7 +14,7 @@ class Tforms extends TModule
         if(count($formFields)){
             $data['form'] = $form;
             $data['form_fields'] = $formFields;
-            $data['class_form'] = new TForm('','/ajax/forms?action=sendform');
+            $data['class_form'] = new TForm_user('','/ajax/forms?action=sendform');
             //$template->setScript('jquery.validate.min.js'); //подключаем скрипт валидации
         }else{
             if($this->template->auth->isAuthorized){
@@ -79,7 +79,7 @@ class Tforms extends TModule
             
         }
     }
-    public function getAdminToolbar( $attr )
+    public function getAdminToolbar( $attr, $buttons=null )
     {
         $buttons[] = array('action'=>'settings', 'icon'=>'wrench', 'text'=>'Настройки', 'title'=>'');
         $buttons[] = array('action'=>'edit', 'icon'=>'pencil', 'text'=>'Редактировать', 'title'=>'');

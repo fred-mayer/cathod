@@ -499,6 +499,7 @@ class TTemplate
                             <button class="btn" module="admin" action="editpage" idpage="<? echo $this->idpage; ?>">Редактировать страницу</button>
                             <button class="btn" module="admin" action="copypage" idpage="<? echo $this->idpage; ?>">Клонировать страницу</button>
 							<button class="btn" module="admin" action="listmodule">Список модулей</button>
+							<button class="btn btn-primary" module="admin" action="exitadmin">Выйти</button>
                         </div>
                     </div>
                 </div>

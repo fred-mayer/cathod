@@ -9,6 +9,7 @@
  */
 class TPages
 {
+	static $script;
     protected $db;
     protected $alias;
 
@@ -58,6 +59,7 @@ class TPages
             }else{
                 $module = $template->getModule( $this->alias );
             }
+            
             
             if ( ($module) !== false ) // Загружаем модуль
             {

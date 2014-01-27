@@ -9,6 +9,7 @@ div.modal > p{
 .admin_tools{
     display:inline;
 }
+.admin_tools, .admin-modal *{ font-family: Arial; line-height: normal;}
 .admin-module{
     border:1px solid rgba(255,125,125,0.20);
     box-sizing:border-box;
@@ -116,7 +117,7 @@ aside nav.nav{
         box-sizing:border-box;
         -moz-box-sizing:border-box;
         -webkit-box-sizing:border-box;
-        position: relative;
+        position: fixed;
         z-index:10;
 }
 #admin-panel p{
@@ -128,7 +129,7 @@ aside nav.nav{
 }
 #admin-sub-panel{
 	text-align:center;
-   
+	right:0;
 	width:150px;
 	float:right;
 	color:#FFFFFF;
@@ -140,7 +141,7 @@ aside nav.nav{
         border-radius: 0 0 4px 4px;
         -moz-border-radius: 0 0 4px 4px;
         -webkit-border-radius: 0 0 4px 4px;
-        position: relative;
+        position: fixed;
         z-index: 100;
 }
 #admin-sub-panel span {

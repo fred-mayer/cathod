@@ -12,6 +12,7 @@
                 
                 
                 <button class="btn" module="admin" action="listmodule">Список модулей</button>
+                <button class="btn btn-primary" module="admin" action="exit">Выйти</button>
             </div>
         </div>
     </div>
