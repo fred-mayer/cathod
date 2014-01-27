@@ -18,9 +18,9 @@
     define('POS','');
 
     // mysql
-    define( 'DB_NAME',      'triposnew' );
+    define( 'DB_NAME',      'db' );
     define( 'DB_USER',      'user' );
-    define( 'DB_PASSWORD',  '7895123' );
+    define( 'DB_PASSWORD',  'pass' );
     define( 'DB_LOCATION',  'localhost' );
 
     define( 'LANGUAGE', 'ru' );
