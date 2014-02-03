@@ -114,9 +114,15 @@ class TPages
         else
         {
             $page = $this->getPage( $template->route ); // Получаем из базы все что знаем о странице
+            $isModuleAlias = $this->isModuleAlias($this->alias);
             if ( empty($page) )
             {
-                $template->_404(); // 404
+                //Проверяем есть ли модуль с таким алиасом
+                if($isModuleAlias===false){
+                	$template->_404(); // 404
+                }else{ //иначе если модуль есть загружаем страницу и передаем управление модулю
+	                $page = $this->getPageByAlias($this->alias);
+                }
             }
             
             // Если не админ и страница скрыта то 404 ошибка
@@ -136,7 +142,7 @@ class TPages
             
             
             //проверяем соответствует ли алиас модулю
-            $isModuleAlias = $this->isModuleAlias($this->alias);            
+                        
             if($isModuleAlias!==false){          
                 //$mainModule = $this->getModule($isModuleAlias->id);
                 $m_obj = $template->getModule( $isModuleAlias->name, ($isModuleAlias->params == '') ? '' : json_decode( $isModuleAlias->params, true ) ); // Загружаем модуль и задаем ему позицию
@@ -242,6 +248,11 @@ class TPages
     protected function getPageById( $idpage )
     {
         return $this->db->select( 'SELECT * FROM core_page WHERE id='.$idpage )->current();
+    }
+    
+    protected function getPageByAlias( $alias )
+    {
+        return $this->db->select( 'SELECT * FROM core_page WHERE alias=\''.$alias.'\'' )->current();
     }
 
     protected function getModule( $idmodule )
