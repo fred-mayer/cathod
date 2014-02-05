@@ -389,6 +389,11 @@ class TForm_user
                             };'; 
             }
                             
+        }else{
+	         $script .= '$("#'.$this->idForm.'").submit(function(){ ';
+            //проверяем на ошибки
+            $script .= $valid;
+            $script .= '});';
         }
         $script .='</script>';
         TPages::$script = $script;
