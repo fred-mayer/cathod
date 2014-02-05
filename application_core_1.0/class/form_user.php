@@ -113,7 +113,7 @@ class TForm_user
                 $this->textarea($name, $label, $value, $id, $required, $placeholder, $pattern);
             break;
             case "email":
-                $this->inputText($name, $label, $value, $id, $required, $placeholder, $pattern,'email');
+                $this->inputText($name, $label, $value, $id, $required, $placeholder, "^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$",'email');
             break;
             case "phone":
                 $this->inputText($name, $label, $value, $id, $required, $placeholder, "(\+?\d[- .]*){7,13}");
@@ -300,15 +300,20 @@ class TForm_user
         if($this->script){
             $script .= $this->script;
         }
-        if($this->ajax){
-            $script .= '$("#'.$this->idForm.'").submit(function(){ ';
-            //проверяем на ошибки
-            $script .= 'var err = false; var errAll = false; var form = $("#'.$this->idForm.'").get(0); 
+        $script .='
+        	$("input").focus(function(){
+        		$(this).removeClass("has-error");
+        	});
+        ';
+        //валидация
+        //проверяем на ошибки
+            $valid .= 'var err = false; var errAll = false; var form = $("#'.$this->idForm.'").get(0); 
                 for ( var i = 0; i < form.length; i++ ){
                 	var patt = $( form.elements[i] ).attr("pattern");
                     if ( $( form.elements[i] ).val() == "" && $( form.elements[i] ).attr("required") !== undefined)
                     {
                     	err = true;
+                    	$(form.elements[i]).addClass("has-error");
                     	break;
                     }
                     if(patt !== undefined){
@@ -320,7 +325,7 @@ class TForm_user
                 }
                 
                 if (errAll !== false){
-                	$(errAll).addClass("error");
+                	$(errAll).addClass("has-error");
                 	$("#alert_mess").html("Введен неверный формат данных!");
                 } 
                 if (err)  {
@@ -331,6 +336,11 @@ class TForm_user
                     return false;
                  }
                  ';
+         
+        if($this->ajax){
+            $script .= '$("#'.$this->idForm.'").submit(function(){ ';
+            //проверяем на ошибки
+            $script .= $valid;
             
             $script .= 'var params = d_get_post();
                 ';

@@ -59,5 +59,8 @@
            <? $this->getPos('footer'); ?>
        </div>
     </footer>
+<?     	//Вывод скриптов модулей
+        echo TPages::$script;
+?>
 </body>
 </html>
