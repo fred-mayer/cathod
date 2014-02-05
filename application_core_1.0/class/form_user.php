@@ -124,6 +124,9 @@ class TForm_user
             case "select":
                 $this->select($name, $label, $options, $value);
             break;
+            case "checkbox":
+            	$this->checkbox($name, $label, $value);
+            break;
         }
     }
     public function submit($label ){
@@ -372,7 +375,7 @@ class TForm_user
             }else{
                $script .= 'function d_complete(data)
                             {
-                                $(".forms").html(data);
+                                $("#'.$this->idForm.'").html(data);
                             };'; 
             }
                             
