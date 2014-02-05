@@ -157,3 +157,13 @@ aside nav.nav{
 .contanier_drag_drop{ position: relative;}
 aside.toolbar_forms{position: absolute; background: #CCC; width:20%; top:0; left:0; padding: 10px;}
 div.dd{ margin-left: 25%; border:1px dotted #ccc; min-height: 300px; }
+
+/* Стиль поля редактирования кода */
+.sourceEditor{
+	font-family: Consolas,Monaco,monospace;
+    font-size: 13px;
+    line-height: 18.2px;
+	width: 97%;
+	min-height: 250px;
+	
+}

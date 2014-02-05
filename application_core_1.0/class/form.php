@@ -191,7 +191,7 @@ class TForm
         $this->attach = true;
     }
     
-    public function textarea( $name, $label,$value='', $id="", $required="", $placeholder="", $pattern="" )
+    public function textarea( $name, $label='',$value='', $id="", $required="", $placeholder="", $pattern="" )
     {
         $this->post[]= "'$name',$('#".$this->idForm." #$name').val() ";
         

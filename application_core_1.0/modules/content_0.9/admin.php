@@ -13,14 +13,25 @@ class Tadmin_content extends TBAdmin
     {
         $id = $this->getIdContent( $get->idmodule->int() );
         
-        $this->db->update( 'content', array('content'=>$post->content), 'id='.$id );
+        if($post->isHTML=="1"){
+	        $content = $post->html;
+        }else{
+	        $content = $post->content;
+        }
+        
+        $this->db->update( 'content', array('content'=>$content), 'id='.$id );
         
         echo $post->content;
     }
     
     public function insert( $post )
     {
-        $id = $this->db->insert( 'content', array('content'=>$post->content) );
+    	if($post->isHTML=="1"){
+	        $content = $post->html;
+        }else{
+	        $content = $post->content;
+        }
+        $id = $this->db->insert( 'content', array('content'=>$content) );
         
         return array( 'id'=>$id );
     }
