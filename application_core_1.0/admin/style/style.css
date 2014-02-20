@@ -149,7 +149,8 @@ aside nav.nav{
     display: block;
     margin-top: -5px;
 }
-.modal.admin-modal{ width: 800px; margin-left: -400px;}
+.modal.admin-modal{ width: 980px; margin-left: -490px;}
+.modal.admin-modal .modal-body{ max-height: 500px;}
 .thumbnail.newmodules_block{ height: 65px;}
 .verysmall{font-size: 10px; line-height: 10px; display: block; color:#666;}
 

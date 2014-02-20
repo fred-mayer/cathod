@@ -3,7 +3,7 @@
 /**
  * Класс для работы с страницей
  * 
- * @author mizko
+ * @author mizko,mayer
  * @version 1.0
  * @package class
  */
@@ -12,6 +12,7 @@ class TPages
 	static $script;
     protected $db;
     protected $alias;
+    public $moduleControl=false; //управляет ли субстраницами модуль
 
     function __construct( $alias="" )
     {
@@ -117,11 +118,13 @@ class TPages
             $isModuleAlias = $this->isModuleAlias($this->alias);
             if ( empty($page) )
             {
+            	
                 //Проверяем есть ли модуль с таким алиасом
                 if($isModuleAlias===false){
                 	$template->_404(); // 404
                 }else{ //иначе если модуль есть загружаем страницу и передаем управление модулю
 	                $page = $this->getPageByAlias($this->alias);
+	                $this->moduleControl = true; //управление субстраницами модулем
                 }
             }
             
@@ -145,11 +148,13 @@ class TPages
                         
             if($isModuleAlias!==false){          
                 //$mainModule = $this->getModule($isModuleAlias->id);
-                $m_obj = $template->getModule( $isModuleAlias->name, ($isModuleAlias->params == '') ? '' : json_decode( $isModuleAlias->params, true ) ); // Загружаем модуль и задаем ему позицию
-                $m_obj->idmodule = $isModuleAlias->id;
-                $m_obj->hide = 'show';
-                
-                $template->setPos( 'section', $m_obj );
+                if($isModuleAlias->exist==1){
+	                $m_obj = $template->getModule( $isModuleAlias->name, ($isModuleAlias->params == '') ? '' : json_decode( $isModuleAlias->params, true ) ); // Загружаем модуль и задаем ему позицию
+	                $m_obj->idmodule = $isModuleAlias->id;
+	                $m_obj->hide = 'show';
+	                
+	                $template->setPos( 'section', $m_obj );
+                }
             }
             
             /*// Получаем все данные о стандартных модулях для страницы default *** костыль!!!
@@ -186,9 +191,8 @@ class TPages
                         }
                     }
                     
-
-
-                    if ( $isModuleAlias === false || ($isModuleAlias !== false && $m->set_pos != 'section') ) // Если главный модуль тогда только он в section присутствует!
+                    // Если главный модуль тогда только он в section присутствует!
+                    if ( $isModuleAlias === false || $isModuleAlias->exist=="0" || ($isModuleAlias !== false && $m->set_pos != 'section') ) 
                     { 
                         $template->setPos( $m->set_pos, $m_obj );
                     }
@@ -210,7 +214,7 @@ class TPages
     
     protected function isModuleAlias($alias)
     {
-        return $this->db->select('SELECT * FROM core_modules_group WHERE `name`=\''.$alias.'\' AND exist=1')->current();
+        return $this->db->select('SELECT m.*,a.* FROM core_modules_group as m LEFT JOIN core_aliases_modules as a ON m.name=a.module_name WHERE (m.name LIKE \''.$alias.'\' OR a.alias LIKE \''.$alias.'\') LIMIT 1')->current();
     }
     
     protected function getPage( $alias )

@@ -16,6 +16,9 @@
     
     //позиции
     define('POS','');
+    
+    //шаблон
+    define('TEMPLATE','temp1');
 
     // mysql
     define( 'DB_NAME',      'db' );

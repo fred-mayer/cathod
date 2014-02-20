@@ -29,7 +29,7 @@ $this->setTitle( 'Редактировать форму' );
     $form->endForm();
 
     $this->setBody( $form );
-    $this->setNameButtonPrimary( 'Сохранить', $this->urlAction( $template ) );
+    $this->setNameButtonPrimary( 'Сохранить', $this->urlAction($template, '', true ) );
     $this->displayDialog();
     
 ?>

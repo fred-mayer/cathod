@@ -31,7 +31,7 @@ class TTemplate
      * @access protected
      * @var string
     */
-    protected $default = 'temp1';
+    protected $default = TEMPLATE;
 
 
     public $db;

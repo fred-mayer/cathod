@@ -437,6 +437,18 @@ CREATE TABLE IF NOT EXISTS `core_page_modules` (
 -- --------------------------------------------------------
 
 --
+-- Структура таблицы `core_aliases_modules`
+--
+
+CREATE TABLE IF NOT EXISTS `core_aliases_modules` (
+  `id` int(255) NOT NULL AUTO_INCREMENT,
+  `module_name` varchar(255) NOT NULL,
+  `alias` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `alias` (`alias`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+--
 -- Структура таблицы `core_templates`
 --
 

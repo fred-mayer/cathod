@@ -26,6 +26,7 @@ $form->inputText("newcat","Создать новую");
 $form->html('
     <h4>Дополнительные настройки</h4>
 ');
+$form->inputText("counts","Кол-во новостей",isset($params['counts'])? $params['counts']:0);
 $form->inputText("cols","Кол-во колонок",isset($params['cols'])? $params['cols']:"default");
 $form->inputText("template","Шаблон",isset($params['template'])? $params['template']:"default");
 $form->inputText("mainlink","alias ссылка",isset($params['mainlink'])? $params['mainlink']:"");

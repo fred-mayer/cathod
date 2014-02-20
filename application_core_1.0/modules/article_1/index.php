@@ -68,18 +68,22 @@ class module_article_cats extends module_article_item
     
     public $catid;
     public $cols=3;
+    public $limits=0;
     
     
     public function __construct(array $params, TTemplate $template, Tarticle $module) {
         
         $this->catid = $params['idcat'];
+        $this->limits = (isset($params['counts']))? $params['counts']:0;
         if(isset($params['cols']))
             $this->cols = $params['cols'];
         parent::__construct($params, $template, $module);
     }
     
     public function getItems(){
-        $sql = "SELECT * FROM article_items WHERE id_cat=".$this->catid. " AND hide='show' ORDER BY `date` ASC";
+    	
+        $sql = "SELECT * FROM article_items WHERE id_cat=".$this->catid. " AND hide='show' ORDER BY `date` DESC";
+        $sql .= ($this->limits>0)? " LIMIT {$this->limits}":"";
         if($this->db->select($sql)->current()){
             return $this->db->select($sql)->toObject(); 
         }else{
