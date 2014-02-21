@@ -50,8 +50,8 @@ RewriteRule ^([^/\.]+)/(.*)\.js index.php?template=$1&js=$2 [L]
 RewriteRule ^([^/\.]+)/([^/]+)\.(gif|jpg|jpeg|png|ico)$ index.php?template=$1&img=$2&type=$3 [L]
 RewriteRule ^([^/\.]+)/(.*)\.(gif|jpg|jpeg|png|ico)$ index.php?template=$1&img=$2&type=$3 [L]
 
-RewriteCond %{HTTP_HOST} ^profing.ru
-RewriteRule (.*) http://www.profing.ru/$1 [R=301,L]
+RewriteCond %{HTTP_HOST} ^site.ru
+RewriteRule (.*) http://www.site.ru/$1 [R=301,L]
 
 RewriteBase /
 
