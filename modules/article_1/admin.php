@@ -36,6 +36,8 @@ class Tadmin_article extends TBAdmin
             $params['template'] = (string) $post->template;
         if($post->cols!="default")
             $params['cols'] = (string) $post->cols;
+        if($post->counts>0)
+            $params['counts'] = (string) $post->counts;
         if(count($post->mainlink))
             $params['mainlink'] = (string) $post->mainlink;
         if(count($post->sfx))
@@ -46,7 +48,15 @@ class Tadmin_article extends TBAdmin
         if(count($post->name))
             $this->changeNameModule($get->idmodule,$post->name);
     }
-    
+    protected function setAlias($alias, $n=0){
+    	$uri = ($n!==0)? $alias.$n:$alias;
+	    $id = $this->db->select("SELECT id FROM article_items WHERE alias='{$uri}'")->current("id");
+	    if($id){
+		    return $this->setAlias($alias,$n+1);
+	    }else{
+		    return $uri;
+	    }
+    }
     public function add($get, $post){
         $img = null;
         if ( isset($_FILES['img']) )
@@ -57,7 +67,8 @@ class Tadmin_article extends TBAdmin
         }
         //продолжаем добавление в бд
         $alias = new TString($post->title);
-        $alias = $alias->toURI();
+        $alias = $this->setAlias($alias->toURI());
+        
         $this->db->insert('article_items',array('id_cat'=>$post->idcat,'title'=>$post->title,'alias'=>$alias,'introtext'=>$post->content,'image'=>$img,'url_readmore'=>$post->url));
         echo "Статья " .$post->title . " сохранена!";
     }
