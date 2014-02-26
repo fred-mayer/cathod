@@ -10,7 +10,8 @@ class Tforms extends TModule
         // загрузили форму
         $form = $db->select("SELECT * FROM forms WHERE id=".$params['id'])->current();
         // загружаем поля
-        $formFields = $db->select("SELECT * FROM forms_fields WHERE id_form=".$params['id'] ." ORDER BY `order` ASC")->toObject();
+        //$formFields = $db->select("SELECT * FROM forms_fields WHERE id_form=".$params['id'] ." ORDER BY `order` ASC")->toObject();
+        $formFields = $this->getFields( $params['id'] );
         if(count($formFields)){
             $data['form'] = $form;
             $data['form_fields'] = $formFields;
@@ -25,6 +26,11 @@ class Tforms extends TModule
         
         parent::display( $template );
     }
+    public function getFields( $id )
+    {
+        return $this->db->select("SELECT * FROM forms_fields WHERE id_form=".$id." ORDER BY `order` ASC");
+    }
+
     public function getAjaxDisplay(){
         
         $this->display($this->template);

@@ -1,55 +1,75 @@
 <?php
 $formSite = $module->admin->getFormSettings($template->get->idmodule);
-$this->setTitle( 'Редактировать форму'. $formSite->name );
+$this->setTitle( 'Редактировать форму - '. $formSite->name );
 
-ob_start();
+$formFields = $module->getFields( $formSite->id );
+
+
+$option = array( 'inputText'=>'Строка', 'textarea'=>'Текст', 'email'=>'Адрес электронной почты', 'phone'=>'Телефонный номер', 'file'=>'Файл', 'select'=>'Список' );
+
+    ob_start();
 ?>
-<div class="contanier_drag_drop">
-    <aside class="toolbar_forms">
-        <h4>Добавить</h4>
-        <ul>
-            <li><a href="javascript:void(0)" typeField="inputText" draggable="true">inputText</a></li>
-            <li><a href="javascript:void(0)" typeField="select" draggable="true">select</a></li>
-        </ul>
-    </aside>
-    <div class="dd">
-        
-    </div>
-</div>
+    <button class="btn" id="button_add"><i class="icon-plus"></i></button>
+    <table>
+<?php
+    foreach ( $formFields as $field )
+    {
+?>
+        <tr>
+            <td width="70%"><?php echo $field->label.' ('.$option[$field->type].')'; ?></td>
+            <td valign="top"><button class="btn btn-mini button_edit" idfield="<? echo $field->id; ?>"><i class="icon-pencil"></i></button>
+                <button class="btn btn-mini button_del" idfield="<? echo $field->id; ?>"><i class="icon-remove"></i></button></td>
+        </tr>
+<?php
+    }
+?>
+    </table>
+<?php
+    $html = ob_get_contents();
+    ob_end_clean();
+    
+    $this->setBody( $html );
+    $this->displayDialog();
+    
+?>
 <script>
-    jQuery(document).ready(function($) {
-                $('.dd').on({
-                    dragenter: function(e) {
-                        $(this).css('background-color', 'lightBlue');
-                    },
-                    dragleave: function(e) {
-                        $(this).css('background-color', 'white');
-                        alert(333);
-                    },
-                    drop: function(e) {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        console.log(e.dataTransfer.files);
-                        alert(123);
-                    },
-                    dragend: function(e){
-                        alert(123);
-                    }
-                });
-                $('.toolbar_forms a').on({
-                    drop: function(e) {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        //console.log(e.dataTransfer.files);
-                        alert(123);
-                    }
-                });
+    $("#button_add").bind("click", function(e){
+
+        $.post("<? echo '/ajax/admin/'.$template->route[0].'?dialog=add&id_form='.$formSite->id.'&idmodule='.$template->get->idmodule; ?>", {}, function(data){
+            
+            $('#myModal').html(data);
+        });
+        
+        $('#myModal').html( '<span class="loading"></span>' );
+
+        e.preventDefault();
+        return false;
+    });
+    
+    $(".button_edit").bind("click", function(e){
+
+        $.post("<? echo '/ajax/admin/'.$template->route[0].'?dialog=add&id_form='.$formSite->id.'&idmodule='.$template->get->idmodule.'&id='; ?>"+$(this).attr('idfield'), {}, function(data){
+            
+            $('#myModal').html(data);
+        });
+        
+        $('#myModal').html( '<span class="loading"></span>' );
+
+        e.preventDefault();
+        return false;
+    });
+    
+    $(".button_del").bind("click", function(e){
+
+        $.post("<? echo '/ajax/admin/'.$template->route[0].'?action=del_fields&id_form='.$formSite->id.'&id='; ?>"+$(this).attr('idfield'), {}, function(data){
+            
+            $('#myModal').html( '<p>Загрузка</p>' );
+            $('#myModal').load( "<? echo '/ajax/admin/'.$template->route[0].'?dialog=edit&idmodule='.$template->get->idmodule; ?>" );
+        });
+        
+        $('#myModal').html( '<span class="loading"></span>' );
+
+        e.preventDefault();
+        return false;
     });
 </script>
-<?
-$res = ob_get_contents();
-ob_end_clean();
-$this->setBody( $res );
-$this->setNameButtonPrimary( 'Сохранить', $this->urlAction( $template ) );
-$this->displayDialog();
-?>

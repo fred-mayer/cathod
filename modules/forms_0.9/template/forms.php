@@ -1,9 +1,13 @@
 <?php
 
     $data = $this->getData();
-    $form = $data['form'];
-    $fields = $data['form_fields'];
-    $clForm = $data['class_form'];
+
+    if ( isset($data['form']) && isset($data['form_fields']) && isset($data['class_form']) )
+    {
+        $form = $data['form'];
+        $fields = $data['form_fields'];
+        $clForm = $data['class_form'];
+    }
 ?>
     <?php //проверка заполненности всех полей для отображения модуля или магазина
     if(isset($data['errors'])): ?>

@@ -407,7 +407,7 @@ CREATE TABLE IF NOT EXISTS `core_page` (
   `style` varchar(255) NOT NULL,
   `hide` enum('show','hide') NOT NULL DEFAULT 'hide',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `alias` (`alias`)
+  KEY `alias` (`alias`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=39 ;
 
 --
@@ -415,7 +415,7 @@ CREATE TABLE IF NOT EXISTS `core_page` (
 --
 
 INSERT INTO `core_page` (`id`, `id_parent`, `pagename`, `alias`, `template`, `title`, `keywords`, `descripion`, `script`, `style`, `hide`) VALUES
-(1, 0, '', 'default', '', 'Вконтактер))', '', '', '', '', 'show');
+(1, 0, '', 'default', '', 'Система управления сайтом Cathod', '', '', '', '', 'show');
 -- --------------------------------------------------------
 
 --
@@ -597,4 +597,4 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`id`, `login`, `email`, `password`, `hash`, `date`) VALUES
-(4, 'admin', 'mail@site-don.ru', '33d0fc8b9ec9acb34d3ff45a33e96322', 'f592ec1370dbb91b1ec4af963556cd5d', '2013-09-23 15:24:34');
+(4, 'admin', 'mail@site-don.ru', '2a235d94ad2e78be3bb7aa500366ddb2', 'f592ec1370dbb91b1ec4af963556cd5d', '2013-09-23 15:24:34');
