@@ -21,7 +21,7 @@
         $clForm->hidden("id_form",$form->id);
         
         foreach($fields as $field): 
-            $clForm->insertField($field->type,$field->name,$field->label,"","",(($field->is_required=="yes")? "required":""),$field->placeholder,$field->pattern );
+            $clForm->insertField($field->type,$field->name,$field->label,"","",(($field->is_required=="yes")? "required":""),$field->placeholder,$field->pattern, explode(",", $field->option) );
         endforeach; 
         $clForm->submit("Отправить");
         $clForm->endForm();

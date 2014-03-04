@@ -50,6 +50,7 @@ class Tadmin_forms extends TBAdmin
                 'label'=>$post->label,
                 'placeholder'=>$post->placeholder,
                 'type'=>$post->type,
+                'option'=>$post->option,
                 'is_required'=>$post->is_required,
                 'pattern'=>$post->pattern ), "id=".$post->id->int() );
             
@@ -64,6 +65,7 @@ class Tadmin_forms extends TBAdmin
                                                             'label'=>$post->label,
                                                             'placeholder'=>$post->placeholder,
                                                             'type'=>$post->type,
+                                                            'option'=>$post->option,
                                                             'is_required'=>$post->is_required,
                                                             'pattern'=>$post->pattern,
                                                             'order'=>$maxlevel ));

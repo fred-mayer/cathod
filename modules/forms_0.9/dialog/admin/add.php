@@ -30,6 +30,9 @@
     $form->inputText( 'label',          'Метка' );
     $form->inputText( 'placeholder',    'Текст внутри поля' );
     $form->select( 'type',              'Тип поля', $option, $data == null ? '' : $data->type );
+    
+    $form->inputText( 'option',         'Пункты списка(через запятую)' );
+    
     $form->checkbox( 'is_required',     'Обезательное заполнение', 'yes' );
     $form->inputText( 'pattern',        'Регулярное выражение' );
     $form->inputText( 'order',          'Позиция' );

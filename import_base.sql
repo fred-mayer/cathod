@@ -529,7 +529,7 @@ CREATE TABLE IF NOT EXISTS `forms_fields` (
   `placeholder` varchar(255) NOT NULL,
   `type` varchar(255) NOT NULL,
   `value` text NOT NULL,
-  `options` text NOT NULL,
+  `option` text NOT NULL,
   `is_required` enum('yes','no') NOT NULL DEFAULT 'no',
   `pattern` varchar(255) NOT NULL,
   `order` int(255) NOT NULL,
