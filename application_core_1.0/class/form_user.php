@@ -307,7 +307,7 @@ class TForm_user
         ';
         //валидация
         //проверяем на ошибки
-            $valid .= 'var err = false; var errAll = false; var form = $("#'.$this->idForm.'").get(0); 
+            $valid = 'var err = false; var errAll = false; var form = $("#'.$this->idForm.'").get(0); 
                 for ( var i = 0; i < form.length; i++ ){
                 	var patt = $( form.elements[i] ).attr("pattern");
                     if ( $( form.elements[i] ).val() == "" && $( form.elements[i] ).attr("required") !== undefined)
