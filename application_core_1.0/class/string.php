@@ -122,11 +122,12 @@ final class TString extends TBaseString
     
     public function toURI()
     {
-        $replaces = array(" ",",");
-        $uri = rawurlencode(str_replace($replaces, "-", $this->toTranslit($this->toLower($this->str))));
+        $uri = $this->toTranslit($this->toLower($this->str));
         preg_match_all("/[\w\d\s]+/", $uri, $matches);
+        $uri = rawurlencode(implode("-", $matches[0]));
         
-        return new TString(implode("-", $matches));
+        
+        return new TString($uri);
     }
     
     public function substr( $offset ) // return string
