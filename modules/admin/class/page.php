@@ -67,6 +67,11 @@ class TPage_admin extends TModule_admin
     {
         return $this->db->select( 'SELECT * FROM core_page' );
     }
+    
+    public function getPagesById( $id )
+    {
+        return $this->db->select( 'SELECT * FROM core_page WHERE id='.$id )->current();
+    }
 }
 
 ?>

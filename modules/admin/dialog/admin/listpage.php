@@ -24,6 +24,12 @@
 
     foreach ( $data as $row )
     {
+        
+        if ( $row->id_parent > 0)
+        {
+            $p = $module->admin->getPagesById( $row->id_parent );
+            $row->alias = $p->alias.'/'.$row->alias;
+        }
 ?>
         <tr>
             <td><a href="<?php echo DS.$row->alias.DS; ?>" target="_blank"><? echo $row->title; ?></a></td>
