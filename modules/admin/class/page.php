@@ -62,6 +62,11 @@ class TPage_admin extends TModule_admin
                                                      'descripion'=>$descripion, 'script'=>$script, 'style'=>$style, 
                                                      'hide'=>($hide == '' ? 'show' : $hide)) );
     }
+
+    public function getAllPages()
+    {
+        return $this->db->select( 'SELECT * FROM core_page' );
+    }
 }
 
 ?>

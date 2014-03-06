@@ -34,7 +34,7 @@ class module_menu
     }
     
     public function getMenuItems(){
-        $sql = "SELECT m.*,p.alias FROM `menu` AS m LEFT JOIN `core_page` AS p ON m.id_page=p.id WHERE name_group='".$this->name_group."' AND id_parent=0 AND m.hide='show' ORDER BY m.order ASC";
+        $sql = "SELECT m.*,p.alias FROM `menu` AS m LEFT JOIN `core_page` AS p ON m.id_page=p.id WHERE name_group='".$this->name_group."' AND p.id_parent=0 AND m.hide='show' ORDER BY m.order ASC";
         $items = array();
         $item = $this->db->select("$sql")->current();
         if ($item){
