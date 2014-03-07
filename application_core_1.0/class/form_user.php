@@ -2,6 +2,9 @@
 
 class TForm_user
 {
+    protected static $num=0; //нумерация объектов
+    protected $number; //порядковый номер объекта
+    
     protected $data;
     protected $form = '';
     protected $post = array();
@@ -16,6 +19,10 @@ class TForm_user
     {
         $this->data = $data;
         if($ajax) $this->ajax=$ajax;
+        
+        //порядковый номер объекта
+        self::$num++;
+        $this->number = self::$num;
     }
 
     public function beginForm($id="noid",$name="",$action="",$method="",$style="form-horizontal")
@@ -26,7 +33,7 @@ class TForm_user
         $this->form .= ($name)? ' name="'.$name.'"':'';
         $this->form .= ($action)? ' action="'.$action.'"':'';
         $this->form .= ($method)? ' method="'.$method.'"':'';
-        $this->form .=' class="'.$style.'">';
+        $this->form .=' class="'.$style.'1">';
         $this->style = $style;
     }
     public function legend($legend){
@@ -175,7 +182,7 @@ class TForm_user
     public function inputText( $name, $label="", $value='', $id="", $required="", $placeholder="", $pattern="",$type="text" )
     {
         $this->post[]= "'$name',$('#".$this->idForm." #$name').val() ";
-        $input = '<input type="'.$type.'" id="'.$name.'" name="'.$name.'" value="'.( isset($this->data[$name]) ? $this->data[$name] : '' ).(($value)? $value:'').'"';
+        $input = '<input class="form-control" type="'.$type.'" id="'.$name.'" name="'.$name.'" value="'.( isset($this->data[$name]) ? $this->data[$name] : '' ).(($value)? $value:'').'"';
         $input .= ($required)? " required":"";
         $input .= ($placeholder)? ' placeholder="'.$placeholder.'"':'';
         $input .= ($pattern)? ' pattern="'.$pattern.'"':'';
@@ -214,7 +221,7 @@ class TForm_user
                 $s_option .= '<option value="'.$o.'" '.(($value==$o)? "selected":"").' >'.$o.'</option>';
             }
         }
-        $this->controls( $name, $label, '<select id="'.$name.'" name="'.$name.'">'.$s_option.'</select>' );
+        $this->controls( $name, $label, '<select class="form-control" id="'.$name.'" name="'.$name.'">'.$s_option.'</select>' );
     }
     
     public function radio( $name, $label, $value )
@@ -243,20 +250,20 @@ class TForm_user
     
     protected function controls( $name, $label, $input )
     {
-        $this->form .= ($this->style=="form-inline")? "":'<div class="control-group">';
+        $this->form .= ($this->style=="form-inline")? '<div class="form-group span3">':'<div class="control-group">';
         if($label == ''){
             $this->form .= $input;
         }else{
             $this->form .= '<label class="control-label" for="'.$name.'">'.$label.':</label>'. (($this->style=="form-inline")? $input:'<div class="controls">'.$input.'</div>');
             
         }
-        $this->form .= ($this->style=="form-inline")? "":'</div>';
+        $this->form .= ($this->style=="form-inline")? "</div>":'</div>';
     }
     
     
     protected function get_d_get_post($obj=true){
         if($obj){
-            $res = 'function d_get_post(){
+            $res = 'function d_get_post'.$this->number.'(){
                 var formData = {
                 ';
                 foreach($this->post as $post){
@@ -267,7 +274,7 @@ class TForm_user
                 }
                 $res .= "};";
         }else{
-            $res = 'function d_get_post(){
+            $res = 'function d_get_post'.$this->number.'(){
                 var formData = new FormData();
                 ';
             foreach($this->post as $post){
@@ -342,8 +349,7 @@ class TForm_user
             //проверяем на ошибки
             $script .= $valid;
             
-            $script .= 'var params = d_get_post();
-                ';
+            $script .= 'var params = d_get_post'.$this->number.'();';
             // обход jquery
             $script .= '
                 var xhr = new XMLHttpRequest();
@@ -354,18 +360,18 @@ class TForm_user
                     if ( this.readyState === 4 ) // запрос завершён
                     {
                         if ( this.status === 200 ) 
-                            d_complete(this.response);
+                            d_complete'.$this->number.'(this.response);
                     }
                 };
                 xhr.upload.addEventListener( "progress", function(e){
 
                     if ( e.lengthComputable )
                     {
-                        $("#processBar .bar").css("width",Math.round( e.loaded / e.total * 100 ) + "%");
+                        $("#'.$this->idForm.' .bar").css("width",Math.round( e.loaded / e.total * 100 ) + "%");
                     }
                 });
                 xhr.send(params);
-                $("#processBar").show();
+                $("#'.$this->idForm.' #processBar").show();
             ';
             
             /*
@@ -377,13 +383,13 @@ class TForm_user
             $script .= ' return false; });';
             if(!empty($this->d_complete))
             {
-                $script .= 'function d_complete(data)
+                $script .= 'function d_complete'.$this->number.'(data)
                             {
                                 $("#'.$this->idForm.' '.$this->d_complete.'").html(data);
                             };'; 
                         //
             }else{
-               $script .= 'function d_complete(data)
+               $script .= 'function d_complete'.$this->number.'(data)
                             {
                                 $("#'.$this->idForm.'").html(data);
                             };'; 
@@ -396,7 +402,7 @@ class TForm_user
             $script .= '});';
         }
         $script .='</script>';
-        TPages::$script = $script;
+        TPages::$script .= $script;
     }
 }
 
