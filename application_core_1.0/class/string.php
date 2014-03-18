@@ -122,7 +122,7 @@ final class TString extends TBaseString
     
     public function toURI()
     {
-        $uri = $this->toTranslit($this->toLower($this->str));
+        $uri = str_replace(" ", "-", $this->toTranslit($this->toLower($this->str)));
         preg_match_all("/[\w\d\s]+/", $uri, $matches);
         $uri = rawurlencode(implode("-", $matches[0]));
         
