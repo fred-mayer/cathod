@@ -115,8 +115,10 @@ class TMySQL
     {
         if ( self::$dbh === false )
         {
-            self::$dbh = mysqli_connect( $location, $user, $password, $name );
-            $this->query( 'SET NAMES UTF8' );
+            if ( (self::$dbh = mysqli_connect( $location, $user, $password, $name )) !== false )
+            {
+                $this->query( 'SET NAMES UTF8' );
+            }
             
             self::$result_transaction[] = true;
         }

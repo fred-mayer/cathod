@@ -7,15 +7,17 @@ class Tcatalog extends TModule
     protected $limit = 50;
     public $route;
     
+    public $db;
+    
     public function display( TTemplate $template )
     {
-        $db = $template->db;
+        $this->db = $template->db;
         $this->get = $template->get;
         $this->route = new module_catalog_route($template->get,$this);
         $params = $this->getParams();
         $data['idmodule'] = $this->idmodule;
 		//загрузка магазинов с бд
-		$data['magazines']=$db->select("SELECT * FROM catalog_magazine")->toObject();
+		$data['magazines']=$this->db->select("SELECT * FROM catalog_magazine")->toObject();
         if($params['id']){
 	        //если id указано показывай товары
 	        $data['id'] = $params['id'];

@@ -590,11 +590,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email_index` (`email`),
   UNIQUE KEY `login_index` (`login`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
 -- Дамп данных таблицы `users`
 --
-
-INSERT INTO `users` (`id`, `login`, `email`, `password`, `hash`, `date`) VALUES
-(4, 'admin', 'mail@site-don.ru', '2a235d94ad2e78be3bb7aa500366ddb2', 'f592ec1370dbb91b1ec4af963556cd5d', '2013-09-23 15:24:34');

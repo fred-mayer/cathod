@@ -47,6 +47,10 @@ class TPages
                 }
             }
         }
+        else
+        {
+            $template->_404();
+        }
     }
     
     public function admin( TTemplate $template )
@@ -95,6 +99,10 @@ class TPages
                     }
                 }
             }
+        }
+        else
+        {
+            $this->ajax( $template );
         }
     }
     /**

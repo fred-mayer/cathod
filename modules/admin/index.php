@@ -37,6 +37,21 @@ class Tadmin extends TModule
     {
         return false;
     }
+    
+    public function import( $get, $post )
+    {
+        //http://dev1.cathod.ru/ajax/admin?action=import&skey=1q2w3e4r5t
+        if ( isset($get->skey) && $get->skey == '1q2w3e4r5t' )
+        {
+            //var_dump($get);
+ 
+            include_once( 'class/install.php' );
+            
+            $install = new TInstall_admin();
+            $install->setParentModule( $this );
+            $install->import( $get, $post );
+        }
+    }
 }
 
 ?>

@@ -175,12 +175,76 @@ class TInstall_admin extends TBAdmin
             $result = $this->db->select( 'SHOW CREATE TABLE `'.$name.'`;' )->current('Create Table');
             //$content .= 'DROP TABLE IF EXISTS `'.$name."`;\n\n";//CREATE TABLE IF NOT EXISTS
             //$content .= $result.";\n\n";
-            $content .= preg_replace( '/^CREATE TABLE/ui', 'CREATE TABLE IF NOT EXISTS', $result );
+            $content .= preg_replace( '/^CREATE TABLE/ui', 'CREATE TABLE IF NOT EXISTS', $result ).";\n\n";
         }
         
         return $content;
     }
-    
+
+    private function listTable()
+    {
+        return $this->db->select( 'SHOW TABLES;' );
+    }
+
+    public function import( $get, $post )
+    {
+        // http://dev1.cathod.ru/ajax/admin/admin?action=import
+
+        // Имя скачиваемого файла
+        $file = TMP_DIR.'cathod.zip';
+            
+        // Добавляем файлы в архив
+        $zip = new ZipArchive;
+        if ( $zip->open( $file, ZipArchive::CREATE ) === true )
+        {
+            $this->addFolderToZip( APPLICATION_CORE.'/', APPLICATION_CORE.'/', $zip );
+            $this->addFolderToZip( MODULES_DIR.'/', MODULES_DIR.'/', $zip );
+            $this->addFolderToZip( TEMP_DIR.'/', TEMP_DIR.'/', $zip );
+            $this->addFolderToZip( 'media/', 'media/', $zip );
+            
+            $zip->addFile( '.htaccess' );
+            $zip->addFile( 'config.php' );
+            $zip->addFile( 'index.php' );
+            $zip->addFile( 'robots.txt' );
+            
+            $zip->addFile( 'import_base.sql' );
+            
+            
+            /*$tables = $this->listTable();
+            $t = '';
+            foreach ( $tables as $name )
+            {
+                $t .= $name['Tables_in_'.DB_NAME].';';
+            }
+            
+            $zip->addFromString( '/db.sql', $this->importTable( trim( $t, ';' ) ) );*/
+            
+            
+            $zip->close();
+        
+            //echo 'Импорт завершон. ('.$file.')';
+ 
+            // Контент-тип означающий скачивание
+            header("Content-Type: application/octet-stream");
+
+            // Размер в байтах
+            header("Accept-Ranges: bytes");
+
+            // Размер файла
+            header("Content-Length: ".filesize($file));
+
+            // Расположение скачиваемого файла
+            header("Content-Disposition: attachment; filename=".$file);  
+
+            // Прочитать файл
+            readfile( $file );
+        }
+        else
+        {
+            echo 'Error';
+        }
+    }
+
     private function removeDirectory( $dir )
     {
         if ( ($objs = glob( $dir."/*" )) )
